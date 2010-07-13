@@ -3,7 +3,7 @@ package org.codeandmagic.thoth;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class Thoth extends Activity {
+public class MainScreen extends Activity {
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
