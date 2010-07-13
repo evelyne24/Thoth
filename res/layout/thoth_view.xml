@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:panel="org.miscwidgets"
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+	<LinearLayout
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent">
+	    
+		<org.miscwidgets.widget.Panel
+			android:id="@+id/leftPanel"
+		    android:layout_width="wrap_content" 
+		    android:layout_height="fill_parent" 
+		    android:layout_weight="1" 
+		    android:layout_gravity="left"
+		    panel:handle="@+id/panelHandle"
+		    panel:content="@+id/panelContent"
+		    panel:position="left"
+		    panel:openedHandle="@drawable/left_switcher_expanded_background"
+		    panel:closedHandle="@drawable/left_switcher_collapsed_background">
+			<Button
+				android:id="@+id/panelHandle" 
+			    android:layout_width="33dip" 
+			    android:layout_height="fill_parent" 
+			/>
+			<TextView
+				android:id="@+id/panelContent" 
+			    android:layout_width="wrap_content" 
+			    android:layout_height="fill_parent" 
+			    android:gravity="center"
+			    android:padding="4dip"
+			    android:text="This is\nmy first\nleft Panel"
+			    android:textSize="16dip"
+			    android:textColor="#eee"
+			    android:textStyle="bold"
+			    android:background="#999932"
+			/>
+		</org.miscwidgets.widget.Panel>
+	</LinearLayout>
+</FrameLayout>
