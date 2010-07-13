@@ -90,10 +90,11 @@ containing a value of this type.
     }
     public static final class id {
         public static final int bottom=0x7f040001;
+        public static final int btn=0x7f040004;
         public static final int left=0x7f040002;
-        public static final int leftPanel=0x7f040004;
-        public static final int panelContent=0x7f040006;
-        public static final int panelHandle=0x7f040005;
+        public static final int leftPanel=0x7f040005;
+        public static final int panelContent=0x7f040007;
+        public static final int panelHandle=0x7f040006;
         public static final int right=0x7f040003;
         public static final int top=0x7f040000;
     }

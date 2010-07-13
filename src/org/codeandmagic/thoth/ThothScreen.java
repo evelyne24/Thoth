@@ -1,9 +1,9 @@
 package org.codeandmagic.thoth;
 
-import org.miscwidgets.interpolator.ExpoInterpolator;
-import org.miscwidgets.interpolator.EasingType.Type;
-import org.miscwidgets.widget.Panel;
-import org.miscwidgets.widget.Panel.OnPanelListener;
+import org.codeandmagic.thoth.miscwidgets.Panel;
+import org.codeandmagic.thoth.miscwidgets.Panel.OnPanelListener;
+import org.codeandmagic.thoth.miscwidgets.interpolator.ExpoInterpolator;
+import org.codeandmagic.thoth.miscwidgets.interpolator.EasingType.Type;
 
 import android.app.Activity;
 import android.os.Bundle;

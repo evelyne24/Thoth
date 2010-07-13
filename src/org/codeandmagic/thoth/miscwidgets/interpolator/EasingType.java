@@ -1,4 +1,4 @@
-package org.miscwidgets.interpolator;
+package org.codeandmagic.thoth.miscwidgets.interpolator;
 
 /*
  *

@@ -1,4 +1,4 @@
-package org.miscwidgets.interpolator;
+package org.codeandmagic.thoth.miscwidgets.interpolator;
 
 /*
  *
@@ -31,7 +31,7 @@ package org.miscwidgets.interpolator;
  *
  */
 
-import org.miscwidgets.interpolator.EasingType.Type;
+import org.codeandmagic.thoth.miscwidgets.interpolator.EasingType.Type;
 
 import android.view.animation.Interpolator;
 
