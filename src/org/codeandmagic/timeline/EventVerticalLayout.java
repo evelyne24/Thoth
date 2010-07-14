@@ -8,7 +8,7 @@ import java.util.SortedSet;
  * @author cristi
  *
  */
-public interface VerticalLayout {
+public interface EventVerticalLayout {
 	/**
 	 * Computes the verical position (Y axis) for all events in the provided set.
 	 * @param thoths

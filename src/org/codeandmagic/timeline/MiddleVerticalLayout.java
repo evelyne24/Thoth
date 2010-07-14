@@ -3,7 +3,7 @@ package org.codeandmagic.timeline;
 import java.util.SortedSet;
 
 /**
- * Basic implementation for {@link VerticalLayout} which positions all events 
+ * Basic implementation for {@link EventVerticalLayout} which positions all events 
  * on the middle of the timeline (vertically).
  * @author cristi
  *

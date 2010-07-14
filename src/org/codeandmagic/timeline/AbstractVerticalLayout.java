@@ -2,12 +2,12 @@ package org.codeandmagic.timeline;
 
 
 /**
- * Abstract parent for {@link VerticalLayout}s which requires the instatiation with
+ * Abstract parent for {@link EventVerticalLayout}s which requires the instatiation with
  * a minimum and a maximum allowed value for Y.
  * @author cristi
  *
  */
-public abstract class AbstractVerticalLayout implements VerticalLayout {
+public abstract class AbstractVerticalLayout implements EventVerticalLayout {
 	
 	private float minY;
 	private float maxY;
