@@ -1,4 +1,4 @@
-package org.codeandmagic.thoth.timeline;
+package org.codeandmagic.timeline;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -10,7 +10,6 @@ import org.codeandmagic.thoth.R;
 import org.codeandmagic.thoth.data.PictureThoth;
 import org.codeandmagic.thoth.data.TextThoth;
 import org.codeandmagic.thoth.data.Thoth;
-import org.codeandmagic.thoth.data.Thoths;
 import org.codeandmagic.thoth.data.VideoThoth;
 
 import android.content.Context;
@@ -60,9 +59,9 @@ public class TimelineView extends View {
 	 */
 	private long visibleTime =  DEFAULT_VISIBLE_TIME;
 	/**
-	 * The list of thoths displayed by this timeline
+	 * The list of events displayed by this timeline
 	 */
-	private Thoths thoths;
+	private Events events;
 	/**
 	 * How often do we draw the separation lines (seconds)
 	 */
@@ -95,11 +94,11 @@ public class TimelineView extends View {
 		t3.setDate(new Date(now-DAY*1000-HOUR*16*1000));
 		Thoth t4 = new TextThoth();
 		t4.setDate(new Date(now-DAY*1000));
-		this.getThoths().add(t1,t2,t3,t4);
+		this.getEvents().add(t1,t2,t3,t4);
 	}
 
 	private void initResources() {
-		this.thoths = new Thoths();
+		this.events = new Events();
 		
 		Resources res = this.getContext().getResources();
 		
@@ -150,12 +149,12 @@ public class TimelineView extends View {
 		//no need to call invalidate() because setStartDate() will
 	}
 
-	public Thoths getThoths() {
-		return thoths;
+	public Events getEvents() {
+		return events;
 	}
 	
-	public void addThoths(Collection<Thoth> thoths){
-		this.thoths.add(thoths);
+	public void addEvents(Collection<Event> events){
+		this.events.add(events);
 		invalidate();
 	}
 
@@ -188,24 +187,24 @@ public class TimelineView extends View {
 		super.onDraw(canvas);
 		drawBackground(canvas);
 		drawAxis(canvas);
-		drawThoths(canvas);
+		drawEvents(canvas);
 	}
 	
-	protected void drawThoths(Canvas canvas) {
-		Set<Thoth> ts = this.thoths.getInterval(startDate, endDate);
+	protected void drawEvents(Canvas canvas) {
+		Set<Event> es = this.events.getInterval(startDate, endDate);
 		Random r = new Random();
 		int maxY = getHeight() - axisHeight - THOTH_ICON_HEIGHT;
 		
-		for(Thoth t : ts){
-			long diff = (t.getDate().getTime() - startDate.getTime())/1000;
+		for(Event e : es){
+			long diff = (e.getDate().getTime() - startDate.getTime())/1000;
 			int x = (int)(diff / scale);
 			int y = r.nextInt() % maxY;
-			int iconId = getIconId(t);
+			int iconId = getIconId(e);
 			canvas.drawBitmap(icons[iconId],x,y,null);
 		}
 	}
 
-	private int getIconId(Thoth t) {
+	private int getIconId(Event t) {
 		if(t instanceof PictureThoth){
 			return BMP_PHOTO_THOTH;
 		}else if(t instanceof VideoThoth){

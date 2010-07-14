@@ -1,4 +1,4 @@
-package org.codeandmagic.thoth.timeline;
+package org.codeandmagic.timeline;
 
 
 /**
