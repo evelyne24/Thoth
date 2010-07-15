@@ -29,7 +29,7 @@ public class LiniarHorizontalLayout implements EventHorizontalLayout {
 		this.scale = scale;
 	}
 
-	public float[] computeX(SortedSet<Event> events) {
+	public float[] computeX(SortedSet<Event> events, TimelineRenderingContext context) {
 		float[] x = new float[events.size()];
 		
 		Event first = events.first();

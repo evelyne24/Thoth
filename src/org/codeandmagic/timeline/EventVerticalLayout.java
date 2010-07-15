@@ -12,8 +12,8 @@ public interface EventVerticalLayout {
 	/**
 	 * Computes the verical position (Y axis) for all events in the provided set.
 	 * @param thoths
-	 * @param x The x positions for all events in the set.
+	 * @param context 
 	 * @return
 	 */
-	public float[] computeY(SortedSet<Event> thoths, float[] x);
+	public float[] computeY(SortedSet<Event> thoths, TimelineRenderingContext context);
 }

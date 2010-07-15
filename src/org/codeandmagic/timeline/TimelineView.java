@@ -8,7 +8,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.sax.Element;
 import android.util.Log;
 import android.view.View;
 
@@ -27,6 +26,10 @@ public class TimelineView extends View implements EventsChangeListener {
 	 * The list of events displayed by this timeline
 	 */
 	private final Events events;
+	/**
+	 * The rendering context of the last render
+	 */
+	private TimelineRenderingContext renderingContext;
 	/**
 	 * How often do we draw the separation lines (seconds)
 	 */
@@ -111,19 +114,18 @@ public class TimelineView extends View implements EventsChangeListener {
 		this.renderFromScratch();
 	}
 
-	private float[] eventsX;
-	private float[] eventsY;
 	public void renderFromScratch() {
-		Log.d("Timeline","Recalculating everything");
+		Log.d("Timeline","Recalculating/rendering everything");
+		renderingContext = new TimelineRenderingContext();
 		SortedSet<Event> es = events.getEvents();
-		eventsX = this.horizontalLayout.computeX(es);
-		eventsY = this.verticalLayout.computeY(es, eventsX);
+		renderingContext.setEventsX(this.horizontalLayout.computeX(es, renderingContext));
+		renderingContext.setEventsY(this.verticalLayout.computeY(es, renderingContext));
 		invalidate();
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if(eventsY == null){
+		if(renderingContext == null){
 			Log.d("Timeline","Not ready for drawing!");
 			return;
 		}
@@ -138,7 +140,7 @@ public class TimelineView extends View implements EventsChangeListener {
 		int maxX = getWidth();
 		Iterator<Event> iter = events.getEvents().iterator();
 		int i = 0;
-		while(iter.hasNext() && eventsX[i] < maxX){
+		while(iter.hasNext() && renderingContext.getEventsX()[i] < maxX){
 			drawElement(canvas, iter.next(), i++);
 		}	
 	}
@@ -146,7 +148,7 @@ public class TimelineView extends View implements EventsChangeListener {
 	protected void drawElement(Canvas canvas, Event event, int indx){
 		//Log.d("Timeline","Drawing event "+event+" at "+eventsX[indx]+"."+eventsY[indx]);
 		Bitmap b = this.iconRenderer.getIconForEvent(event);
-		canvas.drawBitmap(b, eventsX[indx], eventsY[indx], null);
+		canvas.drawBitmap(b, renderingContext.getEventsX()[indx], renderingContext.getEventsY()[indx], null);
 	}
 
 	protected void drawAxis(Canvas canvas) {

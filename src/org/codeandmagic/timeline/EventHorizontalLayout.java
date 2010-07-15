@@ -12,7 +12,8 @@ public interface EventHorizontalLayout {
 	/**
 	 * Computes the horizontal position (X axis) for all events in the provided set.
 	 * @param thots
+	 * @param context
 	 * @return
 	 */
-	public float[] computeX(SortedSet<Event> events);
+	public float[] computeX(SortedSet<Event> events, TimelineRenderingContext context);
 }

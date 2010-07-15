@@ -14,7 +14,8 @@ public class MiddleVerticalLayout extends AbstractVerticalLayout{
 		super(minY, maxY);
 	}
 
-	public float[] computeY(SortedSet<Event> thoths, float[] x) {
+	public float[] computeY(SortedSet<Event> thoths, TimelineRenderingContext context) {
+		float[] x = context.getEventsX();
 		float[] y = new float[x.length];
 		float middle = (getMaxY()-getMinY())/2;
 		for(int i=0;i<x.length;i++){
