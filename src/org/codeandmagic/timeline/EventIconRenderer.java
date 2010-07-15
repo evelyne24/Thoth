@@ -2,20 +2,22 @@ package org.codeandmagic.timeline;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
 /**
- * Interface for class responsible for providing a {@link Bitmap} for an
- *  {@link Event} representing the icon being placed on the timeline.
+ * Interface for class responsible with rendering the Event icons onto the timeline.
  * @author cristi
  *
  */
 public interface EventIconRenderer {
 	/**
-	 * Gets the {@link Bitmap} representing the passed event
+	 * Renders the icon representation of the passed event onto the provided canvas
 	 * @param event
-	 * @return
+	 * @param indx index for the passed event in the rendering context
+	 * @param canvas
+	 * @param context
 	 */
-	public Bitmap getIconForEvent(Event event);
+	public void renderIcon(Event event, int indx, Canvas canvas, TimelineRenderingContext context);
 	/**
 	 * Pre-loads the {@link Bitmap}s for all {@link Event} types
 	 * @param context

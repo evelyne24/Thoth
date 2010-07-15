@@ -5,9 +5,7 @@ import java.util.Iterator;
 import java.util.SortedSet;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 
@@ -42,14 +40,23 @@ public class TimelineView extends View implements EventsChangeListener {
 	private EventHorizontalLayout horizontalLayout;
 	private EventVerticalLayout verticalLayout;
 	private EventIconRenderer iconRenderer;
+	private XAxisRenderer xAxisRenderer;
+	private BackgroundRenderer backgroundRenderer;
 
-	public TimelineView(Context context, EventHorizontalLayout horizontalLayout, EventVerticalLayout verticalLayout, EventIconRenderer iconRenderer) {
+	public TimelineView(Context context, 
+						EventHorizontalLayout horizontalLayout, 
+						EventVerticalLayout verticalLayout, 
+						EventIconRenderer iconRenderer,
+						XAxisRenderer xAxisRenderer,
+						BackgroundRenderer backgroundRenderer) {
 		super(context);
 		events = new Events();
 		events.addChangeListener(this);
 		setHorizontalLayout(horizontalLayout);
 		setVerticalLayout(verticalLayout);
 		setIconRenderer(iconRenderer);
+		setxAxisRenderer(xAxisRenderer);
+		setBackgroundRenderer(backgroundRenderer);
 		initResources();
 	}
 
@@ -109,6 +116,22 @@ public class TimelineView extends View implements EventsChangeListener {
 		this.iconRenderer = iconRenderer;
 	}
 
+	public XAxisRenderer getxAxisRenderer() {
+		return xAxisRenderer;
+	}
+
+	public void setxAxisRenderer(XAxisRenderer xAxisRenderer) {
+		this.xAxisRenderer = xAxisRenderer;
+	}
+
+	public BackgroundRenderer getBackgroundRenderer() {
+		return backgroundRenderer;
+	}
+
+	public void setBackgroundRenderer(BackgroundRenderer backgroundRenderer) {
+		this.backgroundRenderer = backgroundRenderer;
+	}
+
 	public void eventsChanged(Events events, Collection<Event> added, Collection<Event> removed) {
 		Log.d("Timeline","Events changed");
 		this.renderFromScratch();
@@ -146,34 +169,14 @@ public class TimelineView extends View implements EventsChangeListener {
 	}
 	
 	protected void drawElement(Canvas canvas, Event event, int indx){
-		//Log.d("Timeline","Drawing event "+event+" at "+eventsX[indx]+"."+eventsY[indx]);
-		Bitmap b = this.iconRenderer.getIconForEvent(event);
-		canvas.drawBitmap(b, renderingContext.getEventsX()[indx], renderingContext.getEventsY()[indx], null);
+		this.iconRenderer.renderIcon(event, indx, canvas, renderingContext);
 	}
 
 	protected void drawAxis(Canvas canvas) {
-		/*int y = getHeight() - getAxisHeight();
-		//draw a while line to separate the actual timeline from axis labels
-		Paint horLinePaint = new Paint();
-		horLinePaint.setColor(Color.LTGRAY);
-		canvas.drawLine(0, y, getWidth(), y, horLinePaint);
-		
-		//draw vertical lines
-		Paint verLinePaint = new Paint();
-		verLinePaint.setPathEffect(new DashPathEffect(new float[]{3f,3f}, 0));
-		verLinePaint.setColor(Color.LTGRAY);
-		SimpleDateFormat df = new SimpleDateFormat("H:m");
-		
-		int pixelsGridInterval = (int)(getGridInterval()/getScale());
-		for(int x = pixelsGridInterval; x < getWidth(); x += pixelsGridInterval){
-			canvas.drawLine(x, 0, x, y, verLinePaint);
-			//draw labels under the grid lines
-			Date d = new Date(startDate.getTime()+(long)(x*scale*1000));
-			canvas.drawText(df.format(d), x-15, y+15, horLinePaint);
-		}*/
+		this.xAxisRenderer.renderXAxis(canvas, renderingContext);
 	}
 
 	protected void drawBackground(Canvas canvas) {
-		canvas.drawColor(Color.DKGRAY);
+		this.backgroundRenderer.renderBackground(canvas, renderingContext);
 	}
 }

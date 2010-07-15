@@ -32,6 +32,11 @@ public abstract class AbstractEventIconRenderer implements EventIconRenderer {
         drawable.draw(canvas);
         return bitmap;
 	}
+	
+	public void renderIcon(Event event, int indx, Canvas canvas, TimelineRenderingContext context) {
+		Bitmap b = getIconForEvent(event);
+		canvas.drawBitmap(b, context.getEventsX()[indx], context.getEventsY()[indx], null);
+	}
 
 	public Bitmap getIconForEvent(Event event) {
 		return icons[getKeyForEvent(event)];
