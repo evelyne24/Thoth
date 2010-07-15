@@ -1,5 +1,7 @@
 package org.codeandmagic.timeline;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -8,6 +10,7 @@ import java.util.TreeSet;
 
 public class Events {
 	private final SortedSet<Event> events = new TreeSet<Event>();
+	private final Collection<EventsChangeListener> changeListeners = new ArrayList<EventsChangeListener>();
 
 	public SortedSet<Event> getEvents() {
 		return events;
@@ -17,14 +20,30 @@ public class Events {
 		for(int i=0; i<event.length; i++){
 			this.events.add(event[i]);
 		}
+		this.notifyChanged(Arrays.asList(event), null);
 	}
 	
 	public void add(Collection<Event> events){
 		this.events.addAll(events);
+		this.notifyChanged(events, null);
 	}
 	
 	public int size(){
 		return this.events.size();
+	}
+	
+	public void notifyChanged(Collection<Event> added, Collection<Event> removed){
+		for(EventsChangeListener lister : changeListeners){
+			lister.eventsChanged(this, added, removed);
+		}
+	}
+	
+	public void addChangeListener(EventsChangeListener listener){
+		changeListeners.add(listener);
+	}
+	
+	public void removeChangeListener(EventsChangeListener listener){
+		changeListeners.remove(listener);
 	}
 	
 	/**

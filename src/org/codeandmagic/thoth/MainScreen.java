@@ -6,6 +6,9 @@ import org.codeandmagic.thoth.data.PictureThoth;
 import org.codeandmagic.thoth.data.TextThoth;
 import org.codeandmagic.thoth.data.Thoth;
 import org.codeandmagic.thoth.data.VideoThoth;
+import org.codeandmagic.thoth.timeline.ThothIconRenderer;
+import org.codeandmagic.timeline.LiniarHorizontalLayout;
+import org.codeandmagic.timeline.MiddleVerticalLayout;
 import org.codeandmagic.timeline.TimelineView;
 
 import android.app.Activity;
@@ -18,7 +21,7 @@ public class MainScreen extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tv = new TimelineView(this);
+        tv = new TimelineView(this, new LiniarHorizontalLayout(500000), new MiddleVerticalLayout(0, 300), new ThothIconRenderer());
         setTestData();
         setContentView(tv);
     }

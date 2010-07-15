@@ -9,7 +9,7 @@ import org.codeandmagic.thoth.data.VideoThoth;
 import org.codeandmagic.timeline.AbstractEventIconRenderer;
 import org.codeandmagic.timeline.Event;
 
-public class ThothEventIconRenderer extends AbstractEventIconRenderer{
+public class ThothIconRenderer extends AbstractEventIconRenderer{
 	
 	private final static int THOTH_ICON_WIDTH = 33;
 	private final static int THOTH_ICON_HEIGHT = 31;
@@ -18,7 +18,7 @@ public class ThothEventIconRenderer extends AbstractEventIconRenderer{
 	public final static int BMP_PHOTO_THOTH = 1;
 	public final static int BMP_VIDEO_THOTH = 2;
 	
-	public ThothEventIconRenderer() {
+	public ThothIconRenderer() {
 		super(THOTH_ICON_WIDTH, THOTH_ICON_HEIGHT);
 	}
 	

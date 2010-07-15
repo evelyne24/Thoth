@@ -1,13 +1,18 @@
 package org.codeandmagic.timeline;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.SortedSet;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.sax.Element;
+import android.util.Log;
 import android.view.View;
 
-public class TimelineView extends View {
+public class TimelineView extends View implements EventsChangeListener {
 	
 	public final static long HOUR = 60*60;
 	public final static long DAY = HOUR*24;
@@ -35,23 +40,23 @@ public class TimelineView extends View {
 	private EventVerticalLayout verticalLayout;
 	private EventIconRenderer iconRenderer;
 
-	public TimelineView(Context context) {
+	public TimelineView(Context context, EventHorizontalLayout horizontalLayout, EventVerticalLayout verticalLayout, EventIconRenderer iconRenderer) {
 		super(context);
-		this.events = new Events();
+		events = new Events();
+		events.addChangeListener(this);
+		setHorizontalLayout(horizontalLayout);
+		setVerticalLayout(verticalLayout);
+		setIconRenderer(iconRenderer);
 		initResources();
 	}
 
 	private void initResources() {
+		Log.d("Timeline","Preloading resources");
 		this.iconRenderer.preloadIcons(this.getContext());
 	}
 
 	public Events getEvents() {
 		return events;
-	}
-	
-	public void addEvents(Collection<Event> events){
-		this.events.add(events);
-		invalidate();
 	}
 
 	public long getGridInterval() {
@@ -101,8 +106,28 @@ public class TimelineView extends View {
 		this.iconRenderer = iconRenderer;
 	}
 
+	public void eventsChanged(Events events, Collection<Event> added, Collection<Event> removed) {
+		Log.d("Timeline","Events changed");
+		this.renderFromScratch();
+	}
+
+	private float[] eventsX;
+	private float[] eventsY;
+	public void renderFromScratch() {
+		Log.d("Timeline","Recalculating everything");
+		SortedSet<Event> es = events.getEvents();
+		eventsX = this.horizontalLayout.computeX(es);
+		eventsY = this.verticalLayout.computeY(es, eventsX);
+		invalidate();
+	}
+
 	@Override
 	protected void onDraw(Canvas canvas) {
+		if(eventsY == null){
+			Log.d("Timeline","Not ready for drawing!");
+			return;
+		}
+		Log.d("Timeline","Drawing");
 		super.onDraw(canvas);
 		drawBackground(canvas);
 		drawAxis(canvas);
@@ -110,17 +135,18 @@ public class TimelineView extends View {
 	}
 	
 	protected void drawEvents(Canvas canvas) {
-		/*Set<Event> es = this.events.getInterval(startDate, endDate);
-		Random r = new Random();
-		int maxY = getHeight() - axisHeight - THOTH_ICON_HEIGHT;
-		
-		for(Event e : es){
-			long diff = (e.getDate().getTime() - startDate.getTime())/1000;
-			int x = (int)(diff / scale);
-			int y = r.nextInt() % maxY;
-			int iconId = getIconId(e);
-			canvas.drawBitmap(icons[iconId],x,y,null);
-		}*/
+		int maxX = getWidth();
+		Iterator<Event> iter = events.getEvents().iterator();
+		int i = 0;
+		while(iter.hasNext() && eventsX[i] < maxX){
+			drawElement(canvas, iter.next(), i++);
+		}	
+	}
+	
+	protected void drawElement(Canvas canvas, Event event, int indx){
+		//Log.d("Timeline","Drawing event "+event+" at "+eventsX[indx]+"."+eventsY[indx]);
+		Bitmap b = this.iconRenderer.getIconForEvent(event);
+		canvas.drawBitmap(b, eventsX[indx], eventsY[indx], null);
 	}
 
 	protected void drawAxis(Canvas canvas) {
@@ -148,17 +174,4 @@ public class TimelineView extends View {
 	protected void drawBackground(Canvas canvas) {
 		canvas.drawColor(Color.DKGRAY);
 	}
-	
-	/*private long detectGridInterval() {
-		long difTime = getEndDate().getTime() - getStartDate().getTime();
-		if(difTime < DAY){
-			return HOUR; //hourly
-		}else if(difTime < WEEK){
-			return DAY; //daily
-		}else if(difTime < MONTH){
-			return WEEK; //weekly
-		}else{
-			return MONTH;
-		}
-	}*/
 }
