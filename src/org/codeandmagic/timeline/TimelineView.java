@@ -1,7 +1,6 @@
 package org.codeandmagic.timeline;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.SortedSet;
 
 import android.content.Context;
@@ -9,17 +8,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 import android.view.View;
 
-public class TimelineView extends View implements EventsChangeListener {
-	
-	public final static long HOUR = 60*60;
-	public final static long DAY = HOUR*24;
-	public final static long WEEK = DAY*7;
-	public final static long MONTH = DAY*31;
-	
-	public final static long DEFAULT_VISIBLE_TIME = DAY * 3; //3 days 
-	public final static int DEFAULT_AXIS_HEIGHT = 20; //px
-	public final static long DEFAULT_GRID_INTERVAL = HOUR * 6;
-	
+public class TimelineView extends View implements EventsChangeListener {	
 	/**
 	 * The list of events displayed by this timeline
 	 */
@@ -28,26 +17,23 @@ public class TimelineView extends View implements EventsChangeListener {
 	 * The rendering context of the last render
 	 */
 	private TimelineRenderingContext renderingContext;
-	/**
-	 * How often do we draw the separation lines (seconds)
-	 */
-	private long gridInterval = DEFAULT_GRID_INTERVAL;
-	/**
-	 * Height of the axis area in pixels
-	 */
-	private int axisHeight = DEFAULT_AXIS_HEIGHT;
 	
 	private EventHorizontalLayout horizontalLayout;
 	private EventVerticalLayout verticalLayout;
 	private EventIconRenderer iconRenderer;
-	private XAxisRenderer xAxisRenderer;
+	private AxisHorizontalLayout axisHorizontalLayout;
+	private AxisRenderer axisRenderer;
 	private BackgroundRenderer backgroundRenderer;
+	
+	private float currentX = 0;
+	private boolean ready = false;
 
 	public TimelineView(Context context, 
 						EventHorizontalLayout horizontalLayout, 
 						EventVerticalLayout verticalLayout, 
 						EventIconRenderer iconRenderer,
-						XAxisRenderer xAxisRenderer,
+						AxisHorizontalLayout axisHorizontalLayout,
+						AxisRenderer xAxisRenderer,
 						BackgroundRenderer backgroundRenderer) {
 		super(context);
 		events = new Events();
@@ -55,7 +41,8 @@ public class TimelineView extends View implements EventsChangeListener {
 		setHorizontalLayout(horizontalLayout);
 		setVerticalLayout(verticalLayout);
 		setIconRenderer(iconRenderer);
-		setxAxisRenderer(xAxisRenderer);
+		setAxisHorizontalLayout(axisHorizontalLayout);
+		setAxisRenderer(xAxisRenderer);
 		setBackgroundRenderer(backgroundRenderer);
 		initResources();
 	}
@@ -69,28 +56,13 @@ public class TimelineView extends View implements EventsChangeListener {
 		return events;
 	}
 
-	public long getGridInterval() {
-		return gridInterval;
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		ready = true;
+		Log.d("Timeline","View size changed! Need to re-render!");
+		renderFromScratch();
 	}
-
-	public void setGridInterval(long gridInterval) {
-		this.gridInterval = gridInterval;
-		invalidate();
-	}
-
-	public int getAxisHeight() {
-		return axisHeight;
-	}
-
-	public void setAxisHeight(int axisHeight) {
-		this.axisHeight = axisHeight;
-		invalidate();
-	}
-
-	//@Override
-	//protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-	//	super.onSizeChanged(w, h, oldw, oldh);
-	//}
 
 	public EventHorizontalLayout getHorizontalLayout() {
 		return horizontalLayout;
@@ -116,12 +88,20 @@ public class TimelineView extends View implements EventsChangeListener {
 		this.iconRenderer = iconRenderer;
 	}
 
-	public XAxisRenderer getxAxisRenderer() {
-		return xAxisRenderer;
+	public void setAxisHorizontalLayout(AxisHorizontalLayout axisHorizontalLayout) {
+		this.axisHorizontalLayout = axisHorizontalLayout;
 	}
 
-	public void setxAxisRenderer(XAxisRenderer xAxisRenderer) {
-		this.xAxisRenderer = xAxisRenderer;
+	public AxisHorizontalLayout getAxisHorizontalLayout() {
+		return axisHorizontalLayout;
+	}
+
+	public AxisRenderer getAxisRenderer() {
+		return axisRenderer;
+	}
+
+	public void setAxisRenderer(AxisRenderer axisRenderer) {
+		this.axisRenderer = axisRenderer;
 	}
 
 	public BackgroundRenderer getBackgroundRenderer() {
@@ -133,16 +113,27 @@ public class TimelineView extends View implements EventsChangeListener {
 	}
 
 	public void eventsChanged(Events events, Collection<Event> added, Collection<Event> removed) {
-		Log.d("Timeline","Events changed");
-		this.renderFromScratch();
+		if(ready){
+			Log.d("Timeline","Events changed! Ready to render!");
+			this.renderFromScratch();
+		}else{
+			Log.d("Timeline","Events changed but view not ready to render them!");
+		}
 	}
 
 	public void renderFromScratch() {
 		Log.d("Timeline","Recalculating/rendering everything");
 		renderingContext = new TimelineRenderingContext();
+		renderingContext.setTimeline(this);
+		renderingContext.setViewWidth(getWidth());
+		renderingContext.setViewHeight(getHeight());
+		renderingContext.setStartX(currentX);
+		renderingContext.setEndX(currentX+getWidth());
+		
 		SortedSet<Event> es = events.getEvents();
 		renderingContext.setEventsX(this.horizontalLayout.computeX(es, renderingContext));
 		renderingContext.setEventsY(this.verticalLayout.computeY(es, renderingContext));
+		renderingContext.setAxisX(this.axisHorizontalLayout.computeX(renderingContext));
 		invalidate();
 	}
 
@@ -160,20 +151,11 @@ public class TimelineView extends View implements EventsChangeListener {
 	}
 	
 	protected void drawEvents(Canvas canvas) {
-		int maxX = getWidth();
-		Iterator<Event> iter = events.getEvents().iterator();
-		int i = 0;
-		while(iter.hasNext() && renderingContext.getEventsX()[i] < maxX){
-			drawElement(canvas, iter.next(), i++);
-		}	
-	}
-	
-	protected void drawElement(Canvas canvas, Event event, int indx){
-		this.iconRenderer.renderIcon(event, indx, canvas, renderingContext);
+		this.iconRenderer.renderIcons(canvas, renderingContext);
 	}
 
 	protected void drawAxis(Canvas canvas) {
-		this.xAxisRenderer.renderXAxis(canvas, renderingContext);
+		this.axisRenderer.renderAxis(canvas, renderingContext);
 	}
 
 	protected void drawBackground(Canvas canvas) {

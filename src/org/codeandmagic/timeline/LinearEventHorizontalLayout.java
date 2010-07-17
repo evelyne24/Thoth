@@ -7,17 +7,17 @@ import java.util.SortedSet;
  * @author cristi
  *
  */
-public class LiniarHorizontalLayout implements EventHorizontalLayout {
+public class LinearEventHorizontalLayout implements EventHorizontalLayout {
 	
 	/**
 	 * The scale factor represents how many time units (milliseconds) are compacted into one pixel  
 	 */
 	private float scale;
 
-	public LiniarHorizontalLayout(){
+	public LinearEventHorizontalLayout(){
 	}
 	
-	public LiniarHorizontalLayout(float scale){
+	public LinearEventHorizontalLayout(float scale){
 		this.scale = scale;
 	}
 

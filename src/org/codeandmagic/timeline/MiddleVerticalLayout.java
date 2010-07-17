@@ -8,16 +8,12 @@ import java.util.SortedSet;
  * @author cristi
  *
  */
-public class MiddleVerticalLayout extends AbstractVerticalLayout{
+public class MiddleVerticalLayout implements EventVerticalLayout{
 	
-	public MiddleVerticalLayout(float minY, float maxY) {
-		super(minY, maxY);
-	}
-
 	public float[] computeY(SortedSet<Event> thoths, TimelineRenderingContext context) {
 		float[] x = context.getEventsX();
 		float[] y = new float[x.length];
-		float middle = (getMaxY()-getMinY())/2;
+		float middle = context.getViewHeight()/2;
 		for(int i=0;i<x.length;i++){
 			y[i] = middle;
 		}
