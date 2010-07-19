@@ -10,8 +10,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class DefaultAxisRenderer implements AxisRenderer{
-	
+public class DefaultAxisRenderer implements AxisRenderer {
+
 	private int height;
 	private Paint linePaint;
 	private Paint labelPaint;
@@ -60,14 +60,14 @@ public class DefaultAxisRenderer implements AxisRenderer{
 	}
 
 	public void renderAxis(Canvas canvas, TimelineRenderingContext context) {
-		renderDecorations(canvas,context);
-		renderSeparators(canvas,context);
+		renderDecorations(canvas, context);
+		renderSeparators(canvas, context);
 	}
 
 	private void renderDecorations(Canvas canvas, TimelineRenderingContext context) {
-		Paint p =  new Paint();
+		Paint p = new Paint();
 		p.setColor(Color.WHITE);
-		float y = context.getViewHeight()-height;
+		float y = context.getViewHeight() - height;
 		canvas.drawLine(0, y, context.getViewWidth(), y, p);
 	}
 
@@ -75,23 +75,23 @@ public class DefaultAxisRenderer implements AxisRenderer{
 		float startX = context.getStartX();
 		float endX = context.getEndX();
 		AxisHint[] hints = context.getAxisX();
-		
+
 		int i0 = 0;
-		while(hints[i0].x < startX){
+		while (hints[i0].x < startX) {
 			++i0;
 		}
 		float diff = hints[i0].x - startX;
-		
+
 		int i = 0;
 		float separatorHeight = context.getViewHeight() - height;
-		while(i < hints.length && hints[i].x <= endX){
-			renderSeparator(canvas, hints[i].date, hints[i].x+diff, separatorHeight, context);
+		while (i < hints.length && hints[i].x <= endX) {
+			renderSeparator(canvas, hints[i].date, hints[i].x + diff, separatorHeight, context);
 			++i;
-		}	
+		}
 	}
 
 	private void renderSeparator(Canvas canvas, Date date, float x, float height, TimelineRenderingContext context) {
 		canvas.drawLine(x, 0, x, height, linePaint);
-		canvas.drawText(df.format(date), x, height+15, labelPaint);
+		canvas.drawText(df.format(date), x, height + 15, labelPaint);
 	}
 }

@@ -22,39 +22,34 @@ import android.graphics.Paint;
 import android.os.Bundle;
 
 public class MainScreen extends Activity {
-	
+
 	TimelineView tv;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Paint separatorPaint = new Paint();
-        separatorPaint.setColor(Color.WHITE);
-        separatorPaint.setPathEffect(new DashPathEffect(new float[]{3,3}, 0));
-        Paint labelPaint = new Paint();
-        labelPaint.setColor(Color.WHITE);
-        tv = new TimelineView(	this, 
-        						new LinearEventHorizontalLayout( TimeUtil.DAY*3 / 600 ), 
-        						new MiddleVerticalLayout(), 
-        						new ThothIconRenderer(), 
-        						new LinearAxisHorizontalLayout(TimeUtil.HOUR*6),
-        						new DefaultAxisRenderer(20,separatorPaint,labelPaint,"H:m"),
-        						new ColorBackgroundRenderer(Color.LTGRAY)
-        );
-        setTestData();
-        setContentView(tv);
-    }
-    
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Paint separatorPaint = new Paint();
+		separatorPaint.setColor(Color.WHITE);
+		separatorPaint.setPathEffect(new DashPathEffect(new float[] { 3, 3 }, 0));
+		Paint labelPaint = new Paint();
+		labelPaint.setColor(Color.WHITE);
+		tv = new TimelineView(this, new LinearEventHorizontalLayout(TimeUtil.DAY * 3 / 600), new MiddleVerticalLayout(), new ThothIconRenderer(),
+				new LinearAxisHorizontalLayout(TimeUtil.HOUR * 6), new DefaultAxisRenderer(20, separatorPaint, labelPaint, "H:m"), new ColorBackgroundRenderer(
+						Color.LTGRAY));
+		setTestData();
+		setContentView(tv);
+	}
+
 	private void setTestData() {
 		long now = (new Date()).getTime();
 		Thoth t1 = new PictureThoth();
-		t1.setDate(new Date(now-TimeUtil.DAY*2));
+		t1.setDate(new Date(now - TimeUtil.DAY * 2));
 		Thoth t2 = new VideoThoth();
-		t2.setDate(new Date(now-TimeUtil.DAY*3+TimeUtil.HOUR*5));
+		t2.setDate(new Date(now - TimeUtil.DAY * 3 + TimeUtil.HOUR * 5));
 		Thoth t3 = new TextThoth();
-		t3.setDate(new Date(now-TimeUtil.DAY-TimeUtil.HOUR*16));
+		t3.setDate(new Date(now - TimeUtil.DAY - TimeUtil.HOUR * 16));
 		Thoth t4 = new TextThoth();
-		t4.setDate(new Date(now-TimeUtil.DAY));
-		tv.getEvents().add(t1,t2,t3,t4);
+		t4.setDate(new Date(now - TimeUtil.DAY));
+		tv.getEvents().add(t1, t2, t3, t4);
 	}
 }

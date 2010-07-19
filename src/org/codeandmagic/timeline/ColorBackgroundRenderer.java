@@ -4,10 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 public class ColorBackgroundRenderer implements BackgroundRenderer {
-	
+
 	private int color;
-	
-	public ColorBackgroundRenderer(int color){
+
+	public ColorBackgroundRenderer(int color) {
 		setColor(color);
 	}
 

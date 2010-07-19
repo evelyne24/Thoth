@@ -4,20 +4,21 @@ import java.util.SortedSet;
 
 /**
  * {@link EventHorizontalLayout} which positions {@link Event}s linearly based on a provided scaling factor.
+ * 
  * @author cristi
- *
+ * 
  */
 public class LinearEventHorizontalLayout implements EventHorizontalLayout {
-	
+
 	/**
-	 * The scale factor represents how many time units (milliseconds) are compacted into one pixel  
+	 * The scale factor represents how many time units (milliseconds) are compacted into one pixel
 	 */
 	private float scale;
 
-	public LinearEventHorizontalLayout(){
+	public LinearEventHorizontalLayout() {
 	}
-	
-	public LinearEventHorizontalLayout(float scale){
+
+	public LinearEventHorizontalLayout(float scale) {
 		this.scale = scale;
 	}
 
@@ -31,15 +32,15 @@ public class LinearEventHorizontalLayout implements EventHorizontalLayout {
 
 	public float[] computeX(SortedSet<Event> events, TimelineRenderingContext context) {
 		float[] x = new float[events.size()];
-		
+
 		Event first = events.first();
 		long t0 = first.getDate().getTime();
-		
+
 		int i = 0;
-		for(Event t : events){
+		for (Event t : events) {
 			x[i++] = (t.getDate().getTime() - t0) / scale;
 		}
-		
+
 		return x;
 	}
 }

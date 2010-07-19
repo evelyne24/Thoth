@@ -8,7 +8,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 import android.view.View;
 
-public class TimelineView extends View implements EventsChangeListener {	
+public class TimelineView extends View implements EventsChangeListener {
 	/**
 	 * The list of events displayed by this timeline
 	 */
@@ -17,24 +17,19 @@ public class TimelineView extends View implements EventsChangeListener {
 	 * The rendering context of the last render
 	 */
 	private TimelineRenderingContext renderingContext;
-	
+
 	private EventHorizontalLayout horizontalLayout;
 	private EventVerticalLayout verticalLayout;
 	private EventIconRenderer iconRenderer;
 	private AxisHorizontalLayout axisHorizontalLayout;
 	private AxisRenderer axisRenderer;
 	private BackgroundRenderer backgroundRenderer;
-	
+
 	private float currentX = 0;
 	private boolean ready = false;
 
-	public TimelineView(Context context, 
-						EventHorizontalLayout horizontalLayout, 
-						EventVerticalLayout verticalLayout, 
-						EventIconRenderer iconRenderer,
-						AxisHorizontalLayout axisHorizontalLayout,
-						AxisRenderer xAxisRenderer,
-						BackgroundRenderer backgroundRenderer) {
+	public TimelineView(Context context, EventHorizontalLayout horizontalLayout, EventVerticalLayout verticalLayout, EventIconRenderer iconRenderer,
+			AxisHorizontalLayout axisHorizontalLayout, AxisRenderer xAxisRenderer, BackgroundRenderer backgroundRenderer) {
 		super(context);
 		events = new Events();
 		events.addChangeListener(this);
@@ -48,7 +43,7 @@ public class TimelineView extends View implements EventsChangeListener {
 	}
 
 	private void initResources() {
-		Log.d("Timeline","Preloading resources");
+		Log.d("Timeline", "Preloading resources");
 		this.iconRenderer.preloadIcons(this.getContext());
 	}
 
@@ -60,7 +55,7 @@ public class TimelineView extends View implements EventsChangeListener {
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		ready = true;
-		Log.d("Timeline","View size changed! Need to re-render!");
+		Log.d("Timeline", "View size changed! Need to re-render!");
 		renderFromScratch();
 	}
 
@@ -113,23 +108,23 @@ public class TimelineView extends View implements EventsChangeListener {
 	}
 
 	public void eventsChanged(Events events, Collection<Event> added, Collection<Event> removed) {
-		if(ready){
-			Log.d("Timeline","Events changed! Ready to render!");
+		if (ready) {
+			Log.d("Timeline", "Events changed! Ready to render!");
 			this.renderFromScratch();
-		}else{
-			Log.d("Timeline","Events changed but view not ready to render them!");
+		} else {
+			Log.d("Timeline", "Events changed but view not ready to render them!");
 		}
 	}
 
 	public void renderFromScratch() {
-		Log.d("Timeline","Recalculating/rendering everything");
+		Log.d("Timeline", "Recalculating/rendering everything");
 		renderingContext = new TimelineRenderingContext();
 		renderingContext.setTimeline(this);
 		renderingContext.setViewWidth(getWidth());
 		renderingContext.setViewHeight(getHeight());
 		renderingContext.setStartX(currentX);
-		renderingContext.setEndX(currentX+getWidth());
-		
+		renderingContext.setEndX(currentX + getWidth());
+
 		SortedSet<Event> es = events.getEvents();
 		renderingContext.setEventsX(this.horizontalLayout.computeX(es, renderingContext));
 		renderingContext.setEventsY(this.verticalLayout.computeY(es, renderingContext));
@@ -139,17 +134,17 @@ public class TimelineView extends View implements EventsChangeListener {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if(renderingContext == null){
-			Log.d("Timeline","Not ready for drawing!");
+		if (renderingContext == null) {
+			Log.d("Timeline", "Not ready for drawing!");
 			return;
 		}
-		Log.d("Timeline","Drawing");
+		Log.d("Timeline", "Drawing");
 		super.onDraw(canvas);
 		drawBackground(canvas);
 		drawAxis(canvas);
 		drawEvents(canvas);
 	}
-	
+
 	protected void drawEvents(Canvas canvas) {
 		this.iconRenderer.renderIcons(canvas, renderingContext);
 	}

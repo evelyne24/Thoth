@@ -9,23 +9,24 @@ import org.codeandmagic.thoth.data.VideoThoth;
 import org.codeandmagic.timeline.AbstractEventIconRenderer;
 import org.codeandmagic.timeline.Event;
 
-public class ThothIconRenderer extends AbstractEventIconRenderer{
-	
+public class ThothIconRenderer extends AbstractEventIconRenderer {
+
 	private final static int THOTH_ICON_WIDTH = 33;
 	private final static int THOTH_ICON_HEIGHT = 31;
 
 	public final static int BMP_TEXT_THOTH = 0;
 	public final static int BMP_PHOTO_THOTH = 1;
 	public final static int BMP_VIDEO_THOTH = 2;
-	
+
 	public ThothIconRenderer() {
 		super(THOTH_ICON_WIDTH, THOTH_ICON_HEIGHT);
 	}
-	
+
 	Map<Integer, Integer> drawables;
+
 	@Override
 	public Map<Integer, Integer> getAllDrawables() {
-		if(drawables == null){
+		if (drawables == null) {
 			drawables = new HashMap<Integer, Integer>();
 			drawables.put(BMP_TEXT_THOTH, R.drawable.text);
 			drawables.put(BMP_PHOTO_THOTH, R.drawable.photo);
@@ -36,13 +37,13 @@ public class ThothIconRenderer extends AbstractEventIconRenderer{
 
 	@Override
 	public int getKeyForEvent(Event event) {
-		if(event instanceof PictureThoth){
+		if (event instanceof PictureThoth) {
 			return BMP_PHOTO_THOTH;
-		}else if(event instanceof VideoThoth){
+		} else if (event instanceof VideoThoth) {
 			return BMP_VIDEO_THOTH;
-		}else{
+		} else {
 			return BMP_TEXT_THOTH;
 		}
 	}
-	
+
 }
