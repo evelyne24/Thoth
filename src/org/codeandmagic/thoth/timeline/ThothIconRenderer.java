@@ -39,9 +39,11 @@ public class ThothIconRenderer extends AbstractEventIconRenderer {
 	public int getKeyForEvent(Event event) {
 		if (event instanceof PictureThoth) {
 			return BMP_PHOTO_THOTH;
-		} else if (event instanceof VideoThoth) {
+		}
+		else if (event instanceof VideoThoth) {
 			return BMP_VIDEO_THOTH;
-		} else {
+		}
+		else {
 			return BMP_TEXT_THOTH;
 		}
 	}

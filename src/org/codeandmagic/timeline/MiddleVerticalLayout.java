@@ -1,6 +1,6 @@
 package org.codeandmagic.timeline;
 
-import java.util.SortedSet;
+import org.codeandmagic.util.FakeArrayFlatFloat;
 
 /**
  * Basic implementation for {@link EventVerticalLayout} which positions all events on the middle of the timeline (vertically).
@@ -10,14 +10,10 @@ import java.util.SortedSet;
  */
 public class MiddleVerticalLayout implements EventVerticalLayout {
 
-	public float[] computeY(SortedSet<Event> thoths, TimelineRenderingContext context) {
-		float[] x = context.getEventsX();
-		float[] y = new float[x.length];
-		float middle = context.getViewHeight() / 2;
-		for (int i = 0; i < x.length; i++) {
-			y[i] = middle;
-		}
-		return y;
+	public void computeY(final TimelineRenderingContext context) {
+		final int size = context.getEventsX().size();
+		final float middle = context.getViewHeight() / 2;
+		context.setEventsY(new FakeArrayFlatFloat(middle, size));
 	}
 
 }

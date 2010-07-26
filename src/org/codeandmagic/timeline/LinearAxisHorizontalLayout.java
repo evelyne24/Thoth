@@ -1,71 +1,53 @@
 package org.codeandmagic.timeline;
 
+import java.util.Calendar;
 import java.util.Date;
-import java.util.SortedSet;
+
+import org.codeandmagic.util.TimeUtils;
 
 public class LinearAxisHorizontalLayout implements AxisHorizontalLayout {
 
 	private long timeStep;
+	private LinearEventHorizontalLayout eventHorizontalLayout;
 
-	public LinearAxisHorizontalLayout(long timeStep) {
+	public LinearAxisHorizontalLayout(final long timeStep, final LinearEventHorizontalLayout eventHorizontalLayout) {
 		setTimeStep(timeStep);
+		setEventHorizontalLayout(eventHorizontalLayout);
 	}
 
-	public AxisHint[] computeX(TimelineRenderingContext context) {
-		if (!(context.getTimeline().getHorizontalLayout() instanceof LinearEventHorizontalLayout)) {
-			throw new IllegalArgumentException("LinearAxisHorizontalLayout can only work with a LinearEventHorizontalLayout but "
-					+ context.getTimeline().getHorizontalLayout().getClass().getName() + " was found instead!");
-		}
-		SortedSet<Event> events = context.getTimeline().getEvents().getEvents();
+	public void computeX(final TimelineRenderingContext context) {
+		final float scale = eventHorizontalLayout.getScale();
+		final long t0 = context.getTimeline().getZeroDate().getTime();
 
-		// int timeScale = detectTimeScale();
+		final long leftTime = t0 - (long) (context.getViewStartX() * scale);
+		final long rightTime = leftTime + (long) (context.getViewWidth() * scale);
+		final long firstTime = TimeUtils.ceiling(new Date(leftTime), Calendar.HOUR).getTime();
+		final int nrAxis = (int) ((rightTime - leftTime) / timeStep) + 1;
 
-		Date firstEvent = events.first().getDate();
-		Date lastEvent = events.last().getDate();
-
-		// Date first = TimeUtil.floor( firstEvent, timeScale );
-		// Date last = TimeUtil.ceiling( lastEvent, timeScale );
-
-		// long firstDif = firstEvent.getTime() - first.getTime();
-		// long lastDif = last.getTime() - lastEvent.getTime();*/
-
-		float scaleFactor = ((LinearEventHorizontalLayout) context.getTimeline().getHorizontalLayout()).getScale();
-		float xStep = timeStep / scaleFactor;
-
-		float x = 0;
-		long t0 = firstEvent.getTime();
-		long tn = lastEvent.getTime();
-		long t = t0;
-		int i = 0;
-
-		int nr = (int) ((tn - t0) / timeStep) + 1;
-		AxisHint[] hints = new AxisHint[nr];
-
-		while (t <= tn) {
-			hints[i++] = new AxisHint(x, new Date(t));
-			x += xStep;
-			t += timeStep;
+		final AxisHint[] hints = new AxisHint[nrAxis];
+		long time = firstTime;
+		for (int i = 0; i < nrAxis; i++) {
+			hints[i] = new AxisHint((time - t0) / scale, new Date(time));
+			time += timeStep;
 		}
 
-		return hints;
+		context.setAxisX(hints);
 	}
 
-	public AxisHint getLeftXFactor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public AxisHint getRightXFactor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setTimeStep(long timeStep) {
+	public void setTimeStep(final long timeStep) {
 		this.timeStep = timeStep;
 	}
 
 	public long getTimeStep() {
 		return timeStep;
+	}
+
+	public void setEventHorizontalLayout(final LinearEventHorizontalLayout eventHorizontalLayout) {
+		this.eventHorizontalLayout = eventHorizontalLayout;
+	}
+
+	public LinearEventHorizontalLayout getEventHorizontalLayout() {
+		return eventHorizontalLayout;
 	}
 
 }

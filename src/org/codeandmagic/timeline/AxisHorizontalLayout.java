@@ -3,14 +3,10 @@ package org.codeandmagic.timeline;
 import java.util.Date;
 
 public interface AxisHorizontalLayout {
-	public AxisHint[] computeX(TimelineRenderingContext context);
-
-	public AxisHint getLeftXFactor();
-
-	public AxisHint getRightXFactor();
+	public void computeX(TimelineRenderingContext context);
 
 	public static class AxisHint {
-		public AxisHint(float x, Date date) {
+		public AxisHint(final float x, final Date date) {
 			this.x = x;
 			this.date = date;
 		}
@@ -18,6 +14,7 @@ public interface AxisHorizontalLayout {
 		public final float x;
 		public final Date date;
 
+		@Override
 		public String toString() {
 			return x + "-" + date;
 		}

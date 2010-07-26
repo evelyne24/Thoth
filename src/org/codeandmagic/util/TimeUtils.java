@@ -3,7 +3,7 @@ package org.codeandmagic.util;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimeUtil {
+public class TimeUtils {
 
 	public final static long MINUTE = 60 * 1000;
 	public final static long HOUR = 60 * MINUTE;
@@ -34,23 +34,28 @@ public class TimeUtil {
 
 	public static Date floor(Date date, int field) {
 		Calendar c = Calendar.getInstance();
-		c.setTime(TimeUtil.floor(date, field));
+		c.setTime(TimeUtils.floor(date, field));
 		c.set(field, c.get(field) + 1);
 		return c.getTime();
 	}
 
 	public static int detectTimeScale(long time, int minUnitsToJumpToNextLevel) {
-		if (time < TimeUtil.MINUTE * minUnitsToJumpToNextLevel) {
+		if (time < TimeUtils.MINUTE * minUnitsToJumpToNextLevel) {
 			return Calendar.SECOND;
-		} else if (time < TimeUtil.HOUR * minUnitsToJumpToNextLevel) {
+		}
+		else if (time < TimeUtils.HOUR * minUnitsToJumpToNextLevel) {
 			return Calendar.MINUTE;
-		} else if (time < TimeUtil.DAY * minUnitsToJumpToNextLevel) {
+		}
+		else if (time < TimeUtils.DAY * minUnitsToJumpToNextLevel) {
 			return Calendar.HOUR;
-		} else if (time < TimeUtil.MONTH * minUnitsToJumpToNextLevel) {
+		}
+		else if (time < TimeUtils.MONTH * minUnitsToJumpToNextLevel) {
 			return Calendar.DATE;
-		} else if (time < TimeUtil.YEAR * minUnitsToJumpToNextLevel) {
+		}
+		else if (time < TimeUtils.YEAR * minUnitsToJumpToNextLevel) {
 			return Calendar.MONTH;
-		} else {
+		}
+		else {
 			return Calendar.YEAR;
 		}
 	}

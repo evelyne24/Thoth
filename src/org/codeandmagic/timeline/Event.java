@@ -3,9 +3,7 @@ package org.codeandmagic.timeline;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.codeandmagic.thoth.data.Thoth;
-
-public class Event implements Comparable<Thoth>, Serializable {
+public class Event implements Comparable<Event>, Serializable {
 	private static final long serialVersionUID = 6214470588903393335L;
 
 	private long id;
@@ -17,7 +15,7 @@ public class Event implements Comparable<Thoth>, Serializable {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 
@@ -25,11 +23,11 @@ public class Event implements Comparable<Thoth>, Serializable {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(final Date date) {
 		this.date = date;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -37,7 +35,7 @@ public class Event implements Comparable<Thoth>, Serializable {
 		return name;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -45,8 +43,8 @@ public class Event implements Comparable<Thoth>, Serializable {
 		return description;
 	}
 
-	public int compareTo(Thoth another) {
+	public int compareTo(final Event another) {
 		// Events are naturally ordered by date
-		return this.date.compareTo(another.getDate());
+		return date.compareTo(another.getDate());
 	}
 }

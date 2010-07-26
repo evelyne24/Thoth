@@ -1,6 +1,11 @@
 package org.codeandmagic.timeline;
 
-import java.util.SortedSet;
+import java.util.Collection;
+import java.util.List;
+
+import org.codeandmagic.util.ArrayUtils;
+import org.codeandmagic.util.FakeArrayFlatFloat;
+import org.codeandmagic.util.FakeArrayLinkFloat;
 
 /**
  * {@link EventHorizontalLayout} which positions {@link Event}s linearly based on a provided scaling factor.
@@ -8,17 +13,18 @@ import java.util.SortedSet;
  * @author cristi
  * 
  */
-public class LinearEventHorizontalLayout implements EventHorizontalLayout {
+public class LinearEventHorizontalLayout implements EventHorizontalLayout, TimelineViewAware {
 
 	/**
 	 * The scale factor represents how many time units (milliseconds) are compacted into one pixel
 	 */
 	private float scale;
+	private float[] cache;
 
 	public LinearEventHorizontalLayout() {
 	}
 
-	public LinearEventHorizontalLayout(float scale) {
+	public LinearEventHorizontalLayout(final float scale) {
 		this.scale = scale;
 	}
 
@@ -26,21 +32,54 @@ public class LinearEventHorizontalLayout implements EventHorizontalLayout {
 		return scale;
 	}
 
-	public void setScale(float scale) {
+	public void setScale(final float scale) {
 		this.scale = scale;
 	}
 
-	public float[] computeX(SortedSet<Event> events, TimelineRenderingContext context) {
-		float[] x = new float[events.size()];
+	public void reCache(final TimelineView timelineView) {
+		final List<Event> events = timelineView.getEvents().getEvents();
+		cache = new float[events.size()];
 
-		Event first = events.first();
-		long t0 = first.getDate().getTime();
+		final long t0 = timelineView.getZeroDate().getTime();
 
 		int i = 0;
-		for (Event t : events) {
-			x[i++] = (t.getDate().getTime() - t0) / scale;
+		for (final Event t : events) {
+			cache[i++] = (t.getDate().getTime() - t0) / scale;
 		}
-
-		return x;
 	}
+
+	public void computeX(final TimelineRenderingContext context) {
+		final int[] pos = ArrayUtils.fuzzyIntervalSearch(cache, context.getViewStartX(), context.getViewStartX()
+				+ context.getViewEndX());
+		if (pos == null) {
+			context.setFirtEventIndex(-1);
+			context.setLastEventIndex(-1);
+			context.setEventsX(new FakeArrayFlatFloat(0, 0));
+			return;
+		}
+		final int first = pos[0];
+		final int last = pos[1];
+		// set the visible events
+		context.setFirtEventIndex(first);
+		context.setLastEventIndex(last);
+		// set the x position of the visible events
+		context.setEventsX(new FakeArrayLinkFloat(cache, first, last));
+	}
+
+	public void timelineViewEventsChanged(final TimelineView timelineView, final Events events, final Collection<Event> added,
+			final Collection<Event> removed) {
+		if (cache != null || timelineView.getWidth() > 0) {
+			reCache(timelineView);
+		}
+	}
+
+	public void timelineViewSizeChanged(final TimelineView timelineView, final int w, final int h, final int oldw, final int oldh) {
+		if (cache == null) {
+			reCache(timelineView);
+		}
+	}
+
+	public void timelineViewContructed(final TimelineView timelineView) {
+	}
+
 }

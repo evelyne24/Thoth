@@ -1,7 +1,8 @@
 package org.codeandmagic.timeline;
 
 import java.util.Collection;
-import java.util.SortedSet;
+import java.util.Date;
+import java.util.HashSet;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,13 +11,11 @@ import android.view.View;
 
 public class TimelineView extends View implements EventsChangeListener {
 	/**
-	 * The list of events displayed by this timeline
+	 * The list of events managed/displayed by this timeline
 	 */
 	private final Events events;
-	/**
-	 * The rendering context of the last render
-	 */
-	private TimelineRenderingContext renderingContext;
+
+	private final Collection<TimelineViewAware> listeners;
 
 	private EventHorizontalLayout horizontalLayout;
 	private EventVerticalLayout verticalLayout;
@@ -25,135 +24,168 @@ public class TimelineView extends View implements EventsChangeListener {
 	private AxisRenderer axisRenderer;
 	private BackgroundRenderer backgroundRenderer;
 
-	private float currentX = 0;
-	private boolean ready = false;
+	private final Date zeroDate = new Date();
+	private final float currentX = 0;
 
-	public TimelineView(Context context, EventHorizontalLayout horizontalLayout, EventVerticalLayout verticalLayout, EventIconRenderer iconRenderer,
-			AxisHorizontalLayout axisHorizontalLayout, AxisRenderer xAxisRenderer, BackgroundRenderer backgroundRenderer) {
+	public TimelineView(final Context context, final EventHorizontalLayout horizontalLayout,
+			final EventVerticalLayout verticalLayout, final EventIconRenderer iconRenderer,
+			final AxisHorizontalLayout axisHorizontalLayout, final AxisRenderer xAxisRenderer,
+			final BackgroundRenderer backgroundRenderer) {
 		super(context);
+
+		listeners = new HashSet<TimelineViewAware>();
+
 		events = new Events();
 		events.addChangeListener(this);
+
 		setHorizontalLayout(horizontalLayout);
 		setVerticalLayout(verticalLayout);
 		setIconRenderer(iconRenderer);
 		setAxisHorizontalLayout(axisHorizontalLayout);
 		setAxisRenderer(xAxisRenderer);
 		setBackgroundRenderer(backgroundRenderer);
-		initResources();
-	}
 
-	private void initResources() {
-		Log.d("Timeline", "Preloading resources");
-		this.iconRenderer.preloadIcons(this.getContext());
+		for (final TimelineViewAware listener : listeners) {
+			listener.timelineViewContructed(this);
+		}
 	}
 
 	public Events getEvents() {
 		return events;
 	}
 
+	public Date getZeroDate() {
+		return zeroDate;
+	}
+
+	public void addListener(final TimelineViewAware listener) {
+		listeners.add(listener);
+	}
+
+	public void removeListener(final TimelineViewAware listener) {
+		listeners.remove(listener);
+	}
+
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+	protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		ready = true;
-		Log.d("Timeline", "View size changed! Need to re-render!");
-		renderFromScratch();
+		Log.d("Timeline", "View size changed!");
+		for (final TimelineViewAware listener : listeners) {
+			listener.timelineViewSizeChanged(this, w, h, oldw, oldh);
+		}
+		invalidate();
 	}
 
 	public EventHorizontalLayout getHorizontalLayout() {
 		return horizontalLayout;
 	}
 
-	public void setHorizontalLayout(EventHorizontalLayout horizontalLayout) {
+	public void setHorizontalLayout(final EventHorizontalLayout horizontalLayout) {
 		this.horizontalLayout = horizontalLayout;
+		if (horizontalLayout instanceof TimelineViewAware) {
+			addListener((TimelineViewAware) horizontalLayout);
+		}
 	}
 
 	public EventVerticalLayout getVerticalLayout() {
 		return verticalLayout;
 	}
 
-	public void setVerticalLayout(EventVerticalLayout verticalLayout) {
+	public void setVerticalLayout(final EventVerticalLayout verticalLayout) {
 		this.verticalLayout = verticalLayout;
+		if (verticalLayout instanceof TimelineViewAware) {
+			addListener((TimelineViewAware) verticalLayout);
+		}
 	}
 
 	public EventIconRenderer getIconRenderer() {
 		return iconRenderer;
 	}
 
-	public void setIconRenderer(EventIconRenderer iconRenderer) {
+	public void setIconRenderer(final EventIconRenderer iconRenderer) {
 		this.iconRenderer = iconRenderer;
-	}
-
-	public void setAxisHorizontalLayout(AxisHorizontalLayout axisHorizontalLayout) {
-		this.axisHorizontalLayout = axisHorizontalLayout;
+		if (iconRenderer instanceof TimelineViewAware) {
+			addListener((TimelineViewAware) iconRenderer);
+		}
 	}
 
 	public AxisHorizontalLayout getAxisHorizontalLayout() {
 		return axisHorizontalLayout;
 	}
 
+	public void setAxisHorizontalLayout(final AxisHorizontalLayout axisHorizontalLayout) {
+		this.axisHorizontalLayout = axisHorizontalLayout;
+		if (axisHorizontalLayout instanceof TimelineViewAware) {
+			addListener((TimelineViewAware) axisHorizontalLayout);
+		}
+	}
+
 	public AxisRenderer getAxisRenderer() {
 		return axisRenderer;
 	}
 
-	public void setAxisRenderer(AxisRenderer axisRenderer) {
+	public void setAxisRenderer(final AxisRenderer axisRenderer) {
 		this.axisRenderer = axisRenderer;
+		if (axisRenderer instanceof TimelineViewAware) {
+			addListener((TimelineViewAware) axisRenderer);
+		}
 	}
 
 	public BackgroundRenderer getBackgroundRenderer() {
 		return backgroundRenderer;
 	}
 
-	public void setBackgroundRenderer(BackgroundRenderer backgroundRenderer) {
+	public void setBackgroundRenderer(final BackgroundRenderer backgroundRenderer) {
 		this.backgroundRenderer = backgroundRenderer;
-	}
-
-	public void eventsChanged(Events events, Collection<Event> added, Collection<Event> removed) {
-		if (ready) {
-			Log.d("Timeline", "Events changed! Ready to render!");
-			this.renderFromScratch();
-		} else {
-			Log.d("Timeline", "Events changed but view not ready to render them!");
+		if (axisRenderer instanceof TimelineViewAware) {
+			addListener((TimelineViewAware) backgroundRenderer);
 		}
 	}
 
-	public void renderFromScratch() {
-		Log.d("Timeline", "Recalculating/rendering everything");
-		renderingContext = new TimelineRenderingContext();
-		renderingContext.setTimeline(this);
-		renderingContext.setViewWidth(getWidth());
-		renderingContext.setViewHeight(getHeight());
-		renderingContext.setStartX(currentX);
-		renderingContext.setEndX(currentX + getWidth());
-
-		SortedSet<Event> es = events.getEvents();
-		renderingContext.setEventsX(this.horizontalLayout.computeX(es, renderingContext));
-		renderingContext.setEventsY(this.verticalLayout.computeY(es, renderingContext));
-		renderingContext.setAxisX(this.axisHorizontalLayout.computeX(renderingContext));
+	public void eventsChanged(final Events events, final Collection<Event> added, final Collection<Event> removed) {
+		for (final TimelineViewAware listener : listeners) {
+			listener.timelineViewEventsChanged(this, events, added, removed);
+		}
 		invalidate();
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas) {
-		if (renderingContext == null) {
-			Log.d("Timeline", "Not ready for drawing!");
-			return;
-		}
+	protected void onDraw(final Canvas canvas) {
 		Log.d("Timeline", "Drawing");
 		super.onDraw(canvas);
-		drawBackground(canvas);
-		drawAxis(canvas);
-		drawEvents(canvas);
+
+		final TimelineRenderingContext context = recalculate();
+
+		drawBackground(canvas, context);
+		drawAxis(canvas, context);
+		drawEvents(canvas, context);
 	}
 
-	protected void drawEvents(Canvas canvas) {
-		this.iconRenderer.renderIcons(canvas, renderingContext);
+	private TimelineRenderingContext recalculate() {
+		Log.d("Timeline", "Recalculating/rendering everything");
+		final TimelineRenderingContext renderingContext = new TimelineRenderingContext();
+		renderingContext.setTimeline(this);
+		renderingContext.setViewWidth(getWidth());
+		renderingContext.setViewHeight(getHeight());
+		renderingContext.setViewStartX(currentX);
+		renderingContext.setViewEndX(currentX + getWidth());
+
+		horizontalLayout.computeX(renderingContext);
+		verticalLayout.computeY(renderingContext);
+		axisHorizontalLayout.computeX(renderingContext);
+
+		return renderingContext;
 	}
 
-	protected void drawAxis(Canvas canvas) {
-		this.axisRenderer.renderAxis(canvas, renderingContext);
+	protected void drawEvents(final Canvas canvas, final TimelineRenderingContext renderingContext) {
+		iconRenderer.renderIcons(canvas, renderingContext);
 	}
 
-	protected void drawBackground(Canvas canvas) {
-		this.backgroundRenderer.renderBackground(canvas, renderingContext);
+	protected void drawAxis(final Canvas canvas, final TimelineRenderingContext renderingContext) {
+		axisRenderer.renderAxis(canvas, renderingContext);
+	}
+
+	protected void drawBackground(final Canvas canvas, final TimelineRenderingContext renderingContext) {
+		backgroundRenderer.renderBackground(canvas, renderingContext);
 	}
 }

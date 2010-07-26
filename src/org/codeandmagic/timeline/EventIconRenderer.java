@@ -1,7 +1,5 @@
 package org.codeandmagic.timeline;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /**
@@ -11,12 +9,5 @@ import android.graphics.Canvas;
  * 
  */
 public interface EventIconRenderer {
-	/**
-	 * Pre-loads the {@link Bitmap}s for all {@link Event} types
-	 * 
-	 * @param context
-	 */
-	public void preloadIcons(Context context);
-
 	public void renderIcons(Canvas canvas, TimelineRenderingContext renderingContext);
 }
