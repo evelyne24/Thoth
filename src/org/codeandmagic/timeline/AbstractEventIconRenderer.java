@@ -54,13 +54,13 @@ public abstract class AbstractEventIconRenderer implements EventIconRenderer, Ti
 		final int nrEvents = eventsX.size();
 
 		for (int i = 0, j = startIndx; i < nrEvents; ++i, ++j) {
-			final float x = eventsX.get(i) - startX;
+			final float x = eventsX.get(i);
 			final float y = eventsY.get(i);
 			final Event event = events.get(j);
 			if (x > endX) {
 				break;
 			}
-			renderIcon(canvas, event, x, y);
+			renderIcon(canvas, event, x - startX, y);
 		}
 	}
 

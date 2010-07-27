@@ -7,6 +7,8 @@ import org.codeandmagic.util.ArrayUtils;
 import org.codeandmagic.util.FakeArrayFlatFloat;
 import org.codeandmagic.util.FakeArrayLinkFloat;
 
+import android.util.Log;
+
 /**
  * {@link EventHorizontalLayout} which positions {@link Event}s linearly based on a provided scaling factor.
  * 
@@ -37,6 +39,7 @@ public class LinearEventHorizontalLayout implements EventHorizontalLayout, Timel
 	}
 
 	public void reCache(final TimelineView timelineView) {
+		Log.d("Thoth", "Recaching the x position of events!");
 		final List<Event> events = timelineView.getEvents().getEvents();
 		cache = new float[events.size()];
 
@@ -49,8 +52,8 @@ public class LinearEventHorizontalLayout implements EventHorizontalLayout, Timel
 	}
 
 	public void computeX(final TimelineRenderingContext context) {
-		final int[] pos = ArrayUtils.fuzzyIntervalSearch(cache, context.getViewStartX(), context.getViewStartX()
-				+ context.getViewEndX());
+		Log.d("Thoth", "Getting events in interval " + context.getViewStartX() + " - " + context.getViewEndX());
+		final int[] pos = ArrayUtils.fuzzyIntervalSearch(cache, context.getViewStartX(), context.getViewEndX());
 		if (pos == null) {
 			context.setFirtEventIndex(-1);
 			context.setLastEventIndex(-1);

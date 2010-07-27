@@ -25,7 +25,7 @@ public class TimelineView extends View implements EventsChangeListener {
 	private BackgroundRenderer backgroundRenderer;
 
 	private final Date zeroDate = new Date();
-	private final float currentX = -550;
+	private final float currentX = -577f;
 
 	public TimelineView(final Context context, final EventHorizontalLayout horizontalLayout,
 			final EventVerticalLayout verticalLayout, final EventIconRenderer iconRenderer,
