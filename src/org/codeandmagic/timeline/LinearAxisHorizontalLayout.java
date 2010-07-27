@@ -19,7 +19,7 @@ public class LinearAxisHorizontalLayout implements AxisHorizontalLayout {
 		final float scale = eventHorizontalLayout.getScale();
 		final long t0 = context.getTimeline().getZeroDate().getTime();
 
-		final long leftTime = t0 - (long) (context.getViewStartX() * scale);
+		final long leftTime = t0 + (long) (context.getViewStartX() * scale);
 		final long rightTime = leftTime + (long) (context.getViewWidth() * scale);
 		final long firstTime = TimeUtils.ceiling(new Date(leftTime), Calendar.HOUR).getTime();
 		final int nrAxis = (int) ((rightTime - leftTime) / timeStep) + 1;

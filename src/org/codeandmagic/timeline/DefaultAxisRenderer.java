@@ -79,12 +79,11 @@ public class DefaultAxisRenderer implements AxisRenderer {
 		if (hints.length == 0)
 			return;
 
-		final float diff = hints[0].x - startX;
+		final float separatorHeight = context.getViewHeight() - height;
 
 		int i = 0;
-		final float separatorHeight = context.getViewHeight() - height;
 		while (i < hints.length && hints[i].x <= endX) {
-			renderSeparator(canvas, hints[i].date, hints[i].x + diff, separatorHeight, context);
+			renderSeparator(canvas, hints[i].date, hints[i].x - startX, separatorHeight, context);
 			++i;
 		}
 	}
