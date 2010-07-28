@@ -13,9 +13,10 @@ public class FakeArrayLinkFloat implements FakeArrayFloat {
 	}
 
 	public float get(final int i) throws ArrayIndexOutOfBoundsException {
-		if (i < leftLimit || i + leftLimit > rightLimit)
+		final int indx = i + leftLimit;
+		if (indx < leftLimit || indx > rightLimit)
 			throw new ArrayIndexOutOfBoundsException();
-		return innerArray[leftLimit + i];
+		return innerArray[indx];
 	}
 
 	public int size() {
