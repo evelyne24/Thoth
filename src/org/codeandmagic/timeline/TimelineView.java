@@ -25,12 +25,13 @@ public class TimelineView extends View implements EventsChangeListener {
 	private BackgroundRenderer backgroundRenderer;
 
 	private final Date zeroDate = new Date();
-	private final float currentX = -577f;
+	private float currentX = -577f;
 
 	public TimelineView(final Context context, final EventHorizontalLayout horizontalLayout,
 			final EventVerticalLayout verticalLayout, final EventIconRenderer iconRenderer,
 			final AxisHorizontalLayout axisHorizontalLayout, final AxisRenderer xAxisRenderer,
 			final BackgroundRenderer backgroundRenderer) {
+
 		super(context);
 
 		listeners = new HashSet<TimelineViewAware>();
@@ -187,5 +188,10 @@ public class TimelineView extends View implements EventsChangeListener {
 
 	protected void drawBackground(final Canvas canvas, final TimelineRenderingContext renderingContext) {
 		backgroundRenderer.renderBackground(canvas, renderingContext);
+	}
+
+	public void scroll(final float distanceX) {
+		currentX += distanceX;
+		invalidate();
 	}
 }
