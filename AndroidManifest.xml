@@ -12,7 +12,7 @@
             </intent-filter>
         </activity>
 
-    <activity android:name="org.codeandmagic.timeline.TimelineActivity"></activity>
+    <activity android:name="org.codeandmagic.timeline.TimelineActivity" android:screenOrientation="landscape"></activity>
 </application>
 
 
