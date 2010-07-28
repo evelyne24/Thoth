@@ -31,11 +31,11 @@ public class ArrayUtils {
 
 		// interval is to the left of the middle
 		if (endValue < middleValue)
-			return searchStartAndEnd(base, startValue, endValue, leftLimit, middle);
+			return searchStartAndEnd(base, startValue, endValue, leftLimit, middle - 1);
 
 		// interval is to the right of the middle
 		if (startValue > middleValue)
-			return searchStartAndEnd(base, startValue, endValue, middle, rightLimit);
+			return searchStartAndEnd(base, startValue, endValue, middle + 1, rightLimit);
 
 		// start is to the left and end is to the right of the middle
 		return new int[] { fuzzySearch(base, startValue, leftLimit, middle, true),
