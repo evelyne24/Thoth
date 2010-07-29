@@ -6,6 +6,7 @@ import java.util.List;
 import org.codeandmagic.util.ArrayUtils;
 import org.codeandmagic.util.FakeArrayFlatFloat;
 import org.codeandmagic.util.FakeArrayLinkFloat;
+import org.codeandmagic.util.TimeUtils;
 
 import android.util.Log;
 
@@ -24,10 +25,7 @@ public class LinearEventHorizontalLayout implements EventHorizontalLayout, Timel
 	private float[] cache;
 
 	public LinearEventHorizontalLayout() {
-	}
-
-	public LinearEventHorizontalLayout(final float scale) {
-		this.scale = scale;
+		setScale(TimeUtils.DAY * 3 / 600);
 	}
 
 	public float getScale() {

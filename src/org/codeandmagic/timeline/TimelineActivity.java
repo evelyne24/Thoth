@@ -10,7 +10,6 @@ import org.codeandmagic.thoth.timeline.ThothIconRenderer;
 import org.codeandmagic.util.TimeUtils;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -28,12 +27,12 @@ public class TimelineActivity extends Activity implements OnGestureListener {
 
 		gestureDetector = new GestureDetector(this);
 
-		final LinearEventHorizontalLayout ehl = new LinearEventHorizontalLayout(TimeUtils.DAY * 3 / 600);
+		final LinearEventHorizontalLayout ehl = new LinearEventHorizontalLayout();
 		final MiddleVerticalLayout evl = new MiddleVerticalLayout();
 		final ThothIconRenderer eir = new ThothIconRenderer();
-		final LinearAxisHorizontalLayout ahl = new LinearAxisHorizontalLayout(6, ehl);
+		final LinearAxisHorizontalLayout ahl = new LinearAxisHorizontalLayout(ehl);
 		final DefaultAxisRenderer ar = new DefaultAxisRenderer();
-		final ColorBackgroundRenderer br = new ColorBackgroundRenderer(Color.LTGRAY);
+		final ColorBackgroundRenderer br = new ColorBackgroundRenderer();
 
 		tv = new TimelineView(this, ehl, evl, eir, ahl, ar, br);
 		setTestData();

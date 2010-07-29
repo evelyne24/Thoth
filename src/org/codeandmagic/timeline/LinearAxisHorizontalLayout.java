@@ -11,9 +11,10 @@ public class LinearAxisHorizontalLayout implements AxisHorizontalLayout {
 	private int timeStep;
 	private LinearEventHorizontalLayout eventHorizontalLayout;
 
-	public LinearAxisHorizontalLayout(final int timeStep, final LinearEventHorizontalLayout eventHorizontalLayout) {
-		setTimeStep(timeStep);
-		setEventHorizontalLayout(eventHorizontalLayout);
+	public LinearAxisHorizontalLayout(final LinearEventHorizontalLayout ehl) {
+		// defaults
+		setTimeStep(6); // 6 HOURS
+		setEventHorizontalLayout(ehl);
 	}
 
 	public void computeX(final TimelineRenderingContext context) {

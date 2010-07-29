@@ -7,19 +7,20 @@ public class ColorBackgroundRenderer implements BackgroundRenderer {
 
 	private int color;
 
-	public ColorBackgroundRenderer(int color) {
-		setColor(color);
+	public ColorBackgroundRenderer() {
+		// set defaults
+		setColor(Color.LTGRAY);
 	}
 
 	public int getColor() {
 		return color;
 	}
 
-	public void setColor(int color) {
+	public void setColor(final int color) {
 		this.color = color;
 	}
 
-	public void renderBackground(Canvas canvas, TimelineRenderingContext context) {
+	public void renderBackground(final Canvas canvas, final TimelineRenderingContext context) {
 		canvas.drawColor(Color.DKGRAY);
 	}
 

@@ -44,46 +44,6 @@ public class DefaultAxisRenderer implements AxisRenderer {
 		setDayFormat("dd MMM");
 	}
 
-	public int getHeight() {
-		return height;
-	}
-
-	public void setHeight(final int height) {
-		this.height = height;
-	}
-
-	public Paint getLinePaint() {
-		return linePaint;
-	}
-
-	public void setLinePaint(final Paint paint) {
-		linePaint = paint;
-	}
-
-	public DateFormat getHourFormat() {
-		return hourFormat;
-	}
-
-	public void setHourFormat(final String format) {
-		hourFormat = new SimpleDateFormat(format);
-	}
-
-	public void setDayFormat(final String format) {
-		dayFormat = new SimpleDateFormat(format);
-	}
-
-	public DateFormat getDayFormat() {
-		return dayFormat;
-	}
-
-	public void setLabelPaint(final Paint labelPaint) {
-		this.labelPaint = labelPaint;
-	}
-
-	public Paint getLabelPaint() {
-		return labelPaint;
-	}
-
 	public void renderAxis(final Canvas canvas, final TimelineRenderingContext context) {
 		renderDecorations(canvas, context);
 		renderSeparators(canvas, context);
@@ -123,6 +83,46 @@ public class DefaultAxisRenderer implements AxisRenderer {
 			canvas.drawText(hourFormat.format(date), x - 15, height + 15, labelPaint);
 		}
 
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(final int height) {
+		this.height = height;
+	}
+
+	public Paint getLinePaint() {
+		return linePaint;
+	}
+
+	public void setLinePaint(final Paint paint) {
+		linePaint = paint;
+	}
+
+	public DateFormat getHourFormat() {
+		return hourFormat;
+	}
+
+	public void setHourFormat(final String format) {
+		hourFormat = new SimpleDateFormat(format);
+	}
+
+	public void setDayFormat(final String format) {
+		dayFormat = new SimpleDateFormat(format);
+	}
+
+	public DateFormat getDayFormat() {
+		return dayFormat;
+	}
+
+	public void setLabelPaint(final Paint labelPaint) {
+		this.labelPaint = labelPaint;
+	}
+
+	public Paint getLabelPaint() {
+		return labelPaint;
 	}
 
 	public void setLabel2Paint(final Paint label2Paint) {
