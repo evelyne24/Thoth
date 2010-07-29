@@ -8,6 +8,7 @@ import org.codeandmagic.timeline.AxisHorizontalLayout.AxisHint;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 
 public class DefaultAxisRenderer implements AxisRenderer {
@@ -15,15 +16,32 @@ public class DefaultAxisRenderer implements AxisRenderer {
 	private int height;
 	private Paint linePaint;
 	private Paint labelPaint;
-	private String format;
-	private DateFormat df;
+	private Paint label2Paint;
+	private DateFormat hourFormat;
+	private DateFormat dayFormat;
 
-	public DefaultAxisRenderer(final int height, final Paint linePaint, final Paint labelPaint, final String format) {
+	public DefaultAxisRenderer() {
 		super();
-		setHeight(height);
-		setLinePaint(linePaint);
+
+		// set defaults
+		setHeight(20);
+
+		final Paint separatorPaint = new Paint();
+		separatorPaint.setColor(Color.WHITE);
+		separatorPaint.setPathEffect(new DashPathEffect(new float[] { 3, 3 }, 0));
+		setLinePaint(separatorPaint);
+
+		final Paint labelPaint = new Paint();
+		labelPaint.setColor(Color.WHITE);
 		setLabelPaint(labelPaint);
-		setFormat(format);
+
+		final Paint label2Paint = new Paint();
+		label2Paint.setColor(Color.YELLOW);
+		setLabel2Paint(label2Paint);
+
+		setHourFormat("HH:mm");
+
+		setDayFormat("dd MMM");
 	}
 
 	public int getHeight() {
@@ -42,13 +60,20 @@ public class DefaultAxisRenderer implements AxisRenderer {
 		linePaint = paint;
 	}
 
-	public String getFormat() {
-		return format;
+	public DateFormat getHourFormat() {
+		return hourFormat;
 	}
 
-	public void setFormat(final String format) {
-		this.format = format;
-		df = new SimpleDateFormat(format);
+	public void setHourFormat(final String format) {
+		hourFormat = new SimpleDateFormat(format);
+	}
+
+	public void setDayFormat(final String format) {
+		dayFormat = new SimpleDateFormat(format);
+	}
+
+	public DateFormat getDayFormat() {
+		return dayFormat;
 	}
 
 	public void setLabelPaint(final Paint labelPaint) {
@@ -91,6 +116,20 @@ public class DefaultAxisRenderer implements AxisRenderer {
 	private void renderSeparator(final Canvas canvas, final Date date, final float x, final float height,
 			final TimelineRenderingContext context) {
 		canvas.drawLine(x, 0, x, height, linePaint);
-		canvas.drawText(df.format(date), x, height + 15, labelPaint);
+		if (date.getHours() == 0) {
+			canvas.drawText(dayFormat.format(date), x - 15, height + 15, label2Paint);
+		}
+		else {
+			canvas.drawText(hourFormat.format(date), x - 15, height + 15, labelPaint);
+		}
+
+	}
+
+	public void setLabel2Paint(final Paint label2Paint) {
+		this.label2Paint = label2Paint;
+	}
+
+	public Paint getLabel2Paint() {
+		return label2Paint;
 	}
 }

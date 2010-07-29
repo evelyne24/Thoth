@@ -11,8 +11,6 @@ import org.codeandmagic.util.TimeUtils;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -30,17 +28,11 @@ public class TimelineActivity extends Activity implements OnGestureListener {
 
 		gestureDetector = new GestureDetector(this);
 
-		final Paint separatorPaint = new Paint();
-		separatorPaint.setColor(Color.WHITE);
-		separatorPaint.setPathEffect(new DashPathEffect(new float[] { 3, 3 }, 0));
-		final Paint labelPaint = new Paint();
-		labelPaint.setColor(Color.WHITE);
-
 		final LinearEventHorizontalLayout ehl = new LinearEventHorizontalLayout(TimeUtils.DAY * 3 / 600);
 		final MiddleVerticalLayout evl = new MiddleVerticalLayout();
 		final ThothIconRenderer eir = new ThothIconRenderer();
 		final LinearAxisHorizontalLayout ahl = new LinearAxisHorizontalLayout(6, ehl);
-		final DefaultAxisRenderer ar = new DefaultAxisRenderer(20, separatorPaint, labelPaint, "H:m");
+		final DefaultAxisRenderer ar = new DefaultAxisRenderer();
 		final ColorBackgroundRenderer br = new ColorBackgroundRenderer(Color.LTGRAY);
 
 		tv = new TimelineView(this, ehl, evl, eir, ahl, ar, br);
