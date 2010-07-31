@@ -69,6 +69,10 @@ public abstract class AbstractEventIconRenderer implements EventIconRenderer, Ti
 		canvas.drawBitmap(b, x, y, null);
 	}
 
+	public boolean isHit(final float eventX, final float eventY, final float clickX, final float clickY) {
+		return clickX > eventX && clickX < eventX + iconWidth && clickY > eventY && clickY < eventY + iconHeight;
+	}
+
 	public Bitmap getIconForEvent(final Event event) {
 		return icons[getKeyForEvent(event)];
 	}
@@ -91,6 +95,10 @@ public abstract class AbstractEventIconRenderer implements EventIconRenderer, Ti
 	}
 
 	public void timelineViewSizeChanged(final TimelineView timelineView, final int w, final int h, final int oldw, final int oldh) {
+	}
+
+	public void timelineViewEventSelected(final TimelineView timelineView, final Event event, final float eventX,
+			final float eventY) {
 	}
 
 	public abstract int getKeyForEvent(Event event);

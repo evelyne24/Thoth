@@ -9,4 +9,6 @@ public interface TimelineViewAware {
 
 	public void timelineViewEventsChanged(TimelineView timelineView, Events events, Collection<Event> added,
 			Collection<Event> removed);
+
+	public void timelineViewEventSelected(TimelineView timelineView, Event event, float eventX, float eventY);
 }

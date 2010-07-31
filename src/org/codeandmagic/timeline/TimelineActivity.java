@@ -6,12 +6,12 @@ import org.codeandmagic.thoth.data.PictureThoth;
 import org.codeandmagic.thoth.data.TextThoth;
 import org.codeandmagic.thoth.data.Thoth;
 import org.codeandmagic.thoth.data.VideoThoth;
+import org.codeandmagic.thoth.timeline.ThothEventRenderer;
 import org.codeandmagic.thoth.timeline.ThothIconRenderer;
 import org.codeandmagic.util.TimeUtils;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.GestureDetector.OnGestureListener;
@@ -33,8 +33,9 @@ public class TimelineActivity extends Activity implements OnGestureListener {
 		final LinearAxisHorizontalLayout ahl = new LinearAxisHorizontalLayout(ehl);
 		final DefaultAxisRenderer ar = new DefaultAxisRenderer();
 		final ColorBackgroundRenderer br = new ColorBackgroundRenderer();
+		final ThothEventRenderer er = new ThothEventRenderer();
 
-		tv = new TimelineView(this, ehl, evl, eir, ahl, ar, br);
+		tv = new TimelineView(this, ehl, evl, eir, ahl, ar, br, er);
 		setTestData();
 
 		setContentView(tv);
@@ -59,7 +60,8 @@ public class TimelineActivity extends Activity implements OnGestureListener {
 	}
 
 	public boolean onDown(final MotionEvent e) {
-		return false;
+		tv.click(e.getX(), e.getY());
+		return true;
 	}
 
 	public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
@@ -73,9 +75,9 @@ public class TimelineActivity extends Activity implements OnGestureListener {
 	private final static float SCROLL_RESPONSIVENESS = 4;
 
 	public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
-		Log.d("Thoth", "Scroll -> dx:" + distanceX);
+		// Log.d("Thoth", "Scroll -> dx:" + distanceX);
 		tv.scroll(distanceX / SCROLL_RESPONSIVENESS);
-		return false;
+		return true;
 	}
 
 	public void onShowPress(final MotionEvent e) {

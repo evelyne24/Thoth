@@ -10,4 +10,6 @@ import android.graphics.Canvas;
  */
 public interface EventIconRenderer {
 	public void renderIcons(Canvas canvas, TimelineRenderingContext renderingContext);
+
+	public boolean isHit(float eventX, float eventY, float clickX, float clickY);
 }

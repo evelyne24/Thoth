@@ -83,4 +83,8 @@ public class LinearEventHorizontalLayout implements EventHorizontalLayout, Timel
 	public void timelineViewContructed(final TimelineView timelineView) {
 	}
 
+	public void timelineViewEventSelected(final TimelineView timelineView, final Event event, final float eventX,
+			final float eventY) {
+	}
+
 }
