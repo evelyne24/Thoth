@@ -12,20 +12,14 @@ import org.codeandmagic.util.TimeUtils;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.GestureDetector.OnGestureListener;
 
-public class TimelineActivity extends Activity implements OnGestureListener {
+public class TimelineActivity extends Activity {
 
 	private TimelineView tv;
-	private GestureDetector gestureDetector;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		gestureDetector = new GestureDetector(this);
 
 		final LinearEventHorizontalLayout ehl = new LinearEventHorizontalLayout();
 		final MiddleVerticalLayout evl = new MiddleVerticalLayout();
@@ -52,40 +46,6 @@ public class TimelineActivity extends Activity implements OnGestureListener {
 		final Thoth t4 = new TextThoth();
 		t4.setDate(new Date(now - TimeUtils.DAY));
 		tv.getEvents().add(t1, t2, t3, t4);
-	}
-
-	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
-		return gestureDetector.onTouchEvent(event);
-	}
-
-	public boolean onDown(final MotionEvent e) {
-		tv.click(e.getX(), e.getY());
-		return true;
-	}
-
-	public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
-		return false;
-	}
-
-	public void onLongPress(final MotionEvent e) {
-
-	}
-
-	private final static float SCROLL_RESPONSIVENESS = 4;
-
-	public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
-		// Log.d("Thoth", "Scroll -> dx:" + distanceX);
-		tv.scroll(distanceX / SCROLL_RESPONSIVENESS);
-		return true;
-	}
-
-	public void onShowPress(final MotionEvent e) {
-
-	}
-
-	public boolean onSingleTapUp(final MotionEvent e) {
-		return false;
 	}
 
 }

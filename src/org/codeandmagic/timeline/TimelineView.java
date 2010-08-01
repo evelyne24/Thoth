@@ -9,12 +9,16 @@ import org.codeandmagic.util.FakeArrayFloat;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.GestureDetector.OnGestureListener;
 import android.widget.RelativeLayout;
 
-class TimelineView extends RelativeLayout implements EventsChangeListener {
+class TimelineView extends RelativeLayout implements EventsChangeListener, OnGestureListener {
 
 	private final TimelineInnerView innerView;
+	private final GestureDetector gestureDetector;
 
 	private final Events events;
 	private Event selectedEvent;
@@ -58,6 +62,7 @@ class TimelineView extends RelativeLayout implements EventsChangeListener {
 			final BackgroundRenderer backgroundRenderer, final EventDetailsRenderer eventRenderer) {
 
 		super(context);
+		gestureDetector = new GestureDetector(this);
 
 		listeners = new HashSet<TimelineViewAware>();
 
@@ -78,6 +83,40 @@ class TimelineView extends RelativeLayout implements EventsChangeListener {
 
 		innerView = new TimelineInnerView(context);
 		addView(innerView);
+	}
+
+	@Override
+	public boolean onTouchEvent(final MotionEvent event) {
+		return gestureDetector.onTouchEvent(event);
+	}
+
+	public boolean onDown(final MotionEvent e) {
+		click(e.getX(), e.getY());
+		return true;
+	}
+
+	public boolean onFling(final MotionEvent e1, final MotionEvent e2, final float velocityX, final float velocityY) {
+		return false;
+	}
+
+	public void onLongPress(final MotionEvent e) {
+
+	}
+
+	private final static float SCROLL_RESPONSIVENESS = 4;
+
+	public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX, final float distanceY) {
+		// Log.d("Thoth", "Scroll -> dx:" + distanceX);
+		scroll(distanceX / SCROLL_RESPONSIVENESS);
+		return true;
+	}
+
+	public void onShowPress(final MotionEvent e) {
+
+	}
+
+	public boolean onSingleTapUp(final MotionEvent e) {
+		return false;
 	}
 
 	@Override
@@ -136,16 +175,13 @@ class TimelineView extends RelativeLayout implements EventsChangeListener {
 		final FakeArrayFloat eventsY = context.getEventsY();
 		final int size = eventsX.size();
 		final float absClickX = x + currentX;
-		final float absClickY = y - 70; // TODO: don't guess the height of the system bar
-		Log.d("Timeline", "Click! x:" + x + " absx: " + absClickX + " y:" + y + " absy:" + absClickY);
 
 		float eventX = 0;
 		float eventY = 0;
 		for (int i = 0; i < size; ++i) {
 			eventX = eventsX.get(i);
 			eventY = eventsY.get(i);
-			Log.d("Timeline", "E " + eventX + " " + eventY);
-			if (iconRenderer.isHit(eventX, eventY, absClickX, absClickY)) {
+			if (iconRenderer.isHit(eventX, eventY, absClickX, y)) {
 				eventClicked(events.getEvents().get(context.getFirtEventIndex() + i), eventX, eventY, x, y);
 			}
 		}
