@@ -38,12 +38,16 @@ public class TimelineActivity extends Activity {
 	private void setTestData() {
 		final long now = (new Date()).getTime();
 		final Thoth t1 = new PictureThoth();
+		t1.setName("T1 Picture Thoth");
 		t1.setDate(new Date(now - TimeUtils.DAY * 2));
 		final Thoth t2 = new VideoThoth();
+		t2.setName("T2 Video Thoth");
 		t2.setDate(new Date(now - TimeUtils.DAY * 3 + TimeUtils.HOUR * 5));
 		final Thoth t3 = new TextThoth();
+		t3.setName("T1 Text Thoth");
 		t3.setDate(new Date(now - TimeUtils.DAY - TimeUtils.HOUR * 16));
 		final Thoth t4 = new TextThoth();
+		t4.setName("T1 Text Thoth");
 		t4.setDate(new Date(now - TimeUtils.DAY));
 		tv.getEvents().add(t1, t2, t3, t4);
 	}

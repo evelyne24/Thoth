@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.GestureDetector.OnGestureListener;
 import android.widget.RelativeLayout;
 
-class TimelineView extends RelativeLayout implements EventsChangeListener, OnGestureListener {
+public class TimelineView extends RelativeLayout implements EventsChangeListener, OnGestureListener {
 
 	private final TimelineInnerView innerView;
 	private final GestureDetector gestureDetector;
@@ -175,6 +175,7 @@ class TimelineView extends RelativeLayout implements EventsChangeListener, OnGes
 		final FakeArrayFloat eventsY = context.getEventsY();
 		final int size = eventsX.size();
 		final float absClickX = x + currentX;
+		final int firstEventIndex = context.getFirtEventIndex();
 
 		float eventX = 0;
 		float eventY = 0;
@@ -182,7 +183,7 @@ class TimelineView extends RelativeLayout implements EventsChangeListener, OnGes
 			eventX = eventsX.get(i);
 			eventY = eventsY.get(i);
 			if (iconRenderer.isHit(eventX, eventY, absClickX, y)) {
-				eventClicked(events.getEvents().get(context.getFirtEventIndex() + i), eventX, eventY, x, y);
+				eventClicked(events.getEvents().get(firstEventIndex + i), eventX, eventY, x, y);
 			}
 		}
 	}
