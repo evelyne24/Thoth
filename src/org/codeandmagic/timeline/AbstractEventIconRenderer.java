@@ -12,6 +12,16 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
+/**
+ * Abstract implementation for {@link EventIconRenderer} that draws an image for the event and optionally a text with the name of
+ * the event. This class performs the actual rendering and collision detection, delegating to subclasses only the defining of
+ * image resources and matching event types to specific images. <br/>
+ * For performance reasons this class preloads all the images by implementing
+ * {@link TimelineViewAware#timelineViewContructed(TimelineView)}.
+ * 
+ * @author cristi
+ * 
+ */
 public abstract class AbstractEventIconRenderer implements EventIconRenderer, TimelineViewAware {
 	/**
 	 * Bitmaps necessary for drawing icons
@@ -69,7 +79,7 @@ public abstract class AbstractEventIconRenderer implements EventIconRenderer, Ti
 		canvas.drawBitmap(b, x, y, null);
 	}
 
-	public boolean isHit(final float eventX, final float eventY, final float clickX, final float clickY) {
+	public boolean isHit(final Event event, final float eventX, final float eventY, final float clickX, final float clickY) {
 		return clickX > eventX && clickX < eventX + iconWidth && clickY > eventY && clickY < eventY + iconHeight;
 	}
 

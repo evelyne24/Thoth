@@ -25,10 +25,10 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 
 	private final Collection<TimelineViewAware> listeners;
 
-	private EventHorizontalLayout horizontalLayout;
-	private EventVerticalLayout verticalLayout;
+	private EventHorizontalLocator horizontalLayout;
+	private EventVerticalLocator verticalLayout;
 	private EventIconRenderer iconRenderer;
-	private AxisHorizontalLayout axisHorizontalLayout;
+	private AxisHorizontalLocator axisHorizontalLayout;
 	private AxisRenderer axisRenderer;
 	private BackgroundRenderer backgroundRenderer;
 	private EventDetailsRenderer eventRenderer;
@@ -56,9 +56,9 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 		}
 	}
 
-	public TimelineView(final Context context, final EventHorizontalLayout horizontalLayout,
-			final EventVerticalLayout verticalLayout, final EventIconRenderer iconRenderer,
-			final AxisHorizontalLayout axisHorizontalLayout, final AxisRenderer xAxisRenderer,
+	public TimelineView(final Context context, final EventHorizontalLocator horizontalLayout,
+			final EventVerticalLocator verticalLayout, final EventIconRenderer iconRenderer,
+			final AxisHorizontalLocator axisHorizontalLayout, final AxisRenderer xAxisRenderer,
 			final BackgroundRenderer backgroundRenderer, final EventDetailsRenderer eventRenderer) {
 
 		super(context);
@@ -179,11 +179,13 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 
 		float eventX = 0;
 		float eventY = 0;
+		Event event = null;
 		for (int i = 0; i < size; ++i) {
 			eventX = eventsX.get(i);
 			eventY = eventsY.get(i);
-			if (iconRenderer.isHit(eventX, eventY, absClickX, y)) {
-				eventClicked(events.getEvents().get(firstEventIndex + i), eventX, eventY, x, y);
+			event = events.getEvents().get(firstEventIndex + i);
+			if (iconRenderer.isHit(event, eventX, eventY, absClickX, y)) {
+				eventClicked(event, eventX, eventY, x, y);
 			}
 		}
 	}
@@ -221,22 +223,22 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 		listeners.remove(listener);
 	}
 
-	public EventHorizontalLayout getHorizontalLayout() {
+	public EventHorizontalLocator getHorizontalLayout() {
 		return horizontalLayout;
 	}
 
-	public void setHorizontalLayout(final EventHorizontalLayout horizontalLayout) {
+	public void setHorizontalLayout(final EventHorizontalLocator horizontalLayout) {
 		this.horizontalLayout = horizontalLayout;
 		if (horizontalLayout instanceof TimelineViewAware) {
 			addListener((TimelineViewAware) horizontalLayout);
 		}
 	}
 
-	public EventVerticalLayout getVerticalLayout() {
+	public EventVerticalLocator getVerticalLayout() {
 		return verticalLayout;
 	}
 
-	public void setVerticalLayout(final EventVerticalLayout verticalLayout) {
+	public void setVerticalLayout(final EventVerticalLocator verticalLayout) {
 		this.verticalLayout = verticalLayout;
 		if (verticalLayout instanceof TimelineViewAware) {
 			addListener((TimelineViewAware) verticalLayout);
@@ -254,11 +256,11 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 		}
 	}
 
-	public AxisHorizontalLayout getAxisHorizontalLayout() {
+	public AxisHorizontalLocator getAxisHorizontalLayout() {
 		return axisHorizontalLayout;
 	}
 
-	public void setAxisHorizontalLayout(final AxisHorizontalLayout axisHorizontalLayout) {
+	public void setAxisHorizontalLayout(final AxisHorizontalLocator axisHorizontalLayout) {
 		this.axisHorizontalLayout = axisHorizontalLayout;
 		if (axisHorizontalLayout instanceof TimelineViewAware) {
 			addListener((TimelineViewAware) axisHorizontalLayout);

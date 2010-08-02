@@ -7,14 +7,15 @@ package org.codeandmagic.timeline;
  * @author cristi
  * 
  */
-public interface EventHorizontalLayout {
+public interface EventHorizontalLocator {
 	/**
-	 * Computes the list of events and their horizontal (X) position that fit in the current visible "frame":
+	 * Computes the list of events and their horizontal (X axis) position that fit in the current visible "frame":
 	 * {@link TimelineRenderingContext#getViewStartX()} to {@link TimelineRenderingContext#getViewEndX()}.
 	 * <p style="color:red">
-	 * The contract of this function guarantees that this method calls {@link TimelineRenderingContext#setFirtEventIndex(int)} ,
+	 * The contract of this method guarantees {@link TimelineRenderingContext#setFirtEventIndex(int)} ,
 	 * {@link TimelineRenderingContext#setLastEventIndex(int)} , and
-	 * {@link TimelineRenderingContext#setEventsX(org.codeandmagic.util.FakeArrayFloat)}
+	 * {@link TimelineRenderingContext#setEventsX(org.codeandmagic.util.FakeArrayFloat)} will be called during the execution of
+	 * this function.
 	 * </p>
 	 * 
 	 * @param context

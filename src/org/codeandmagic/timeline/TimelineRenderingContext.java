@@ -1,6 +1,6 @@
 package org.codeandmagic.timeline;
 
-import org.codeandmagic.timeline.AxisHorizontalLayout.AxisHint;
+import org.codeandmagic.timeline.AxisHorizontalLocator.AxisHint;
 import org.codeandmagic.util.FakeArrayFloat;
 
 public class TimelineRenderingContext {

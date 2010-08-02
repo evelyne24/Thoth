@@ -21,10 +21,10 @@ public class TimelineActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		final LinearEventHorizontalLayout ehl = new LinearEventHorizontalLayout();
-		final MiddleVerticalLayout evl = new MiddleVerticalLayout();
+		final LinearEventHorizontalLocator ehl = new LinearEventHorizontalLocator();
+		final MiddleVerticalLocator evl = new MiddleVerticalLocator();
 		final ThothIconRenderer eir = new ThothIconRenderer();
-		final LinearAxisHorizontalLayout ahl = new LinearAxisHorizontalLayout(ehl);
+		final LinearAxisHorizontalLocator ahl = new LinearAxisHorizontalLocator(ehl);
 		final DefaultAxisRenderer ar = new DefaultAxisRenderer();
 		final ColorBackgroundRenderer br = new ColorBackgroundRenderer();
 		final ThothEventRenderer er = new ThothEventRenderer();

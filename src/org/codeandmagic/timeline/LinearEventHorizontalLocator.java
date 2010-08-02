@@ -11,21 +11,24 @@ import org.codeandmagic.util.TimeUtils;
 import android.util.Log;
 
 /**
- * {@link EventHorizontalLayout} which positions {@link Event}s linearly based on a provided scaling factor.
+ * {@link EventHorizontalLocator} which positions {@link Event}s linearly based on a provided scaling factor. Otherwise said the
+ * position is equal with the time distance from the 0 time ( {@link TimelineView#getZeroDate()} ) to the date of the event
+ * divided by the scaling factor ( {@link #getScale()} ).
  * 
  * @author cristi
  * 
  */
-public class LinearEventHorizontalLayout implements EventHorizontalLayout, TimelineViewAware {
+public class LinearEventHorizontalLocator implements EventHorizontalLocator, TimelineViewAware {
 
 	/**
 	 * The scale factor represents how many time units (milliseconds) are compacted into one pixel
 	 */
 	private float scale;
 	private float[] cache;
+	public static final float DEFAULT_SCALE = TimeUtils.DAY * 3 / 600;
 
-	public LinearEventHorizontalLayout() {
-		setScale(TimeUtils.DAY * 3 / 600);
+	public LinearEventHorizontalLocator() {
+		setScale(DEFAULT_SCALE);
 	}
 
 	public float getScale() {

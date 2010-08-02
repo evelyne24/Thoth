@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.codeandmagic.timeline.AxisHorizontalLayout.AxisHint;
+import org.codeandmagic.timeline.AxisHorizontalLocator.AxisHint;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
