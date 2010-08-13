@@ -8,6 +8,7 @@ import org.codeandmagic.thoth.data.TextThoth;
 import org.codeandmagic.thoth.data.Thoth;
 import org.codeandmagic.thoth.data.VideoThoth;
 import org.codeandmagic.thoth.timeline.ThothEventRenderer;
+import org.codeandmagic.thoth.timeline.ThothIconRenderer;
 import org.codeandmagic.util.TimeUtils;
 
 import android.app.Activity;
@@ -23,7 +24,7 @@ public class TimelineActivity extends Activity {
 
 		final LinearEventHorizontalLocator ehl = new LinearEventHorizontalLocator();
 		final MiddleVerticalLocator evl = new MiddleVerticalLocator();
-		final StaticEventIconRenderer eir = new StaticEventIconRenderer();
+		final ThothIconRenderer eir = new ThothIconRenderer();
 		final LinearAxisHorizontalLocator ahl = new LinearAxisHorizontalLocator(ehl);
 		final DefaultAxisRenderer ar = new DefaultAxisRenderer();
 		final ColorBackgroundRenderer br = new ColorBackgroundRenderer();

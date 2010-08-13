@@ -5,47 +5,28 @@ import java.util.Map;
 
 import org.codeandmagic.thoth.R;
 import org.codeandmagic.thoth.data.PictureThoth;
+import org.codeandmagic.thoth.data.TextThoth;
 import org.codeandmagic.thoth.data.VideoThoth;
-import org.codeandmagic.timeline.AbstractEventIconRenderer;
-import org.codeandmagic.timeline.Event;
+import org.codeandmagic.timeline.ImagePerClassEventIconRenderer;
 
-public class ThothIconRenderer extends AbstractEventIconRenderer {
+public class ThothIconRenderer extends ImagePerClassEventIconRenderer {
 
 	private final static int THOTH_ICON_WIDTH = 33;
 	private final static int THOTH_ICON_HEIGHT = 31;
 
-	public final static int BMP_TEXT_THOTH = 0;
-	public final static int BMP_PHOTO_THOTH = 1;
-	public final static int BMP_VIDEO_THOTH = 2;
-
 	public ThothIconRenderer() {
-		super(THOTH_ICON_WIDTH, THOTH_ICON_HEIGHT);
+		super();
+
+		setIconWidth(THOTH_ICON_WIDTH);
+		setIconHeight(THOTH_ICON_HEIGHT);
+
+		final Map<Class<?>, Integer> assoc = new HashMap<Class<?>, Integer>();
+		assoc.put(PictureThoth.class, R.drawable.photo);
+		assoc.put(VideoThoth.class, R.drawable.video);
+		assoc.put(TextThoth.class, R.drawable.text);
+		setAssociations(assoc);
+
+		setLabelLeft(THOTH_ICON_WIDTH + 5);
+		setLabelTop(THOTH_ICON_HEIGHT / 2 + 5);
 	}
-
-	Map<Integer, Integer> drawables;
-
-	@Override
-	public Map<Integer, Integer> getAllDrawables() {
-		if (drawables == null) {
-			drawables = new HashMap<Integer, Integer>();
-			drawables.put(BMP_TEXT_THOTH, R.drawable.text);
-			drawables.put(BMP_PHOTO_THOTH, R.drawable.photo);
-			drawables.put(BMP_VIDEO_THOTH, R.drawable.video);
-		}
-		return drawables;
-	}
-
-	@Override
-	public int getKeyForEvent(Event event) {
-		if (event instanceof PictureThoth) {
-			return BMP_PHOTO_THOTH;
-		}
-		else if (event instanceof VideoThoth) {
-			return BMP_VIDEO_THOTH;
-		}
-		else {
-			return BMP_TEXT_THOTH;
-		}
-	}
-
 }
