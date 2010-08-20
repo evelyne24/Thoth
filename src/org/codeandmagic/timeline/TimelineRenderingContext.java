@@ -8,8 +8,6 @@ public class TimelineRenderingContext {
 
 	private float viewStartX;
 	private float viewEndX;
-	private int viewWidth;
-	private int viewHeight;
 
 	private int firtEventIndex;
 	private int lastEventIndex;
@@ -63,22 +61,6 @@ public class TimelineRenderingContext {
 
 	public float getViewEndX() {
 		return viewEndX;
-	}
-
-	public void setViewWidth(final int viewWidth) {
-		this.viewWidth = viewWidth;
-	}
-
-	public int getViewWidth() {
-		return viewWidth;
-	}
-
-	public void setViewHeight(final int viewHeight) {
-		this.viewHeight = viewHeight;
-	}
-
-	public int getViewHeight() {
-		return viewHeight;
 	}
 
 	public void setFirtEventIndex(final int firtEventIndex) {

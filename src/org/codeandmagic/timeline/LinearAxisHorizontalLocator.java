@@ -33,7 +33,7 @@ public class LinearAxisHorizontalLocator implements AxisHorizontalLocator {
 		final long t0 = context.getTimeline().getZeroDate().getTime();
 
 		final long leftTime = t0 + (long) (context.getViewStartX() * scale);
-		final long rightTime = leftTime + (long) (context.getViewWidth() * scale);
+		final long rightTime = leftTime + (long) (context.getTimeline().getWidth() * scale);
 
 		final Date firstTime = TimeUtils.ceiling(new Date(leftTime), Calendar.HOUR);
 		final int hour = firstTime.getHours();

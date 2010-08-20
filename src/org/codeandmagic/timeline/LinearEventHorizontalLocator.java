@@ -1,11 +1,7 @@
 package org.codeandmagic.timeline;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.codeandmagic.util.ArrayUtils;
-import org.codeandmagic.util.FakeArrayFlatFloat;
-import org.codeandmagic.util.FakeArrayLinkFloat;
 import org.codeandmagic.util.TimeUtils;
 
 import android.util.Log;
@@ -18,13 +14,12 @@ import android.util.Log;
  * @author cristi
  * 
  */
-public class LinearEventHorizontalLocator implements EventHorizontalLocator, TimelineViewAware {
+public class LinearEventHorizontalLocator extends PrecachedEventHorizontalLocator {
 
 	/**
 	 * The scale factor represents how many time units (milliseconds) are compacted into one pixel
 	 */
 	private float scale;
-	private float[] cache;
 	public static final float DEFAULT_SCALE = TimeUtils.DAY * 3 / 600;
 
 	public LinearEventHorizontalLocator() {
@@ -39,6 +34,7 @@ public class LinearEventHorizontalLocator implements EventHorizontalLocator, Tim
 		this.scale = scale;
 	}
 
+	@Override
 	public void reCache(final TimelineView timelineView) {
 		Log.d("Thoth", "Recaching the x position of events!");
 		final List<Event> events = timelineView.getEvents().getEvents();
@@ -50,44 +46,6 @@ public class LinearEventHorizontalLocator implements EventHorizontalLocator, Tim
 		for (final Event t : events) {
 			cache[i++] = (t.getDate().getTime() - t0) / scale;
 		}
-	}
-
-	public void computeX(final TimelineRenderingContext context) {
-		Log.d("Thoth", "Getting events in interval " + context.getViewStartX() + " - " + context.getViewEndX());
-		final int[] pos = ArrayUtils.fuzzyIntervalSearch(cache, context.getViewStartX(), context.getViewEndX());
-		if (pos == null) {
-			context.setFirtEventIndex(-1);
-			context.setLastEventIndex(-1);
-			context.setEventsX(new FakeArrayFlatFloat(0, 0));
-			return;
-		}
-		final int first = pos[0];
-		final int last = pos[1];
-		// set the visible events
-		context.setFirtEventIndex(first);
-		context.setLastEventIndex(last);
-		// set the x position of the visible events
-		context.setEventsX(new FakeArrayLinkFloat(cache, first, last));
-	}
-
-	public void timelineViewEventsChanged(final TimelineView timelineView, final Events events, final Collection<Event> added,
-			final Collection<Event> removed) {
-		if (cache != null || timelineView.getWidth() > 0) {
-			reCache(timelineView);
-		}
-	}
-
-	public void timelineViewSizeChanged(final TimelineView timelineView, final int w, final int h, final int oldw, final int oldh) {
-		if (cache == null) {
-			reCache(timelineView);
-		}
-	}
-
-	public void timelineViewContructed(final TimelineView timelineView) {
-	}
-
-	public void timelineViewEventSelected(final TimelineView timelineView, final Event event, final float eventX,
-			final float eventY) {
 	}
 
 }

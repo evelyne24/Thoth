@@ -52,8 +52,8 @@ public class DefaultAxisRenderer implements AxisRenderer {
 	private void renderDecorations(final Canvas canvas, final TimelineRenderingContext context) {
 		final Paint p = new Paint();
 		p.setColor(Color.WHITE);
-		final float y = context.getViewHeight() - height;
-		canvas.drawLine(0, y, context.getViewWidth(), y, p);
+		final float y = context.getTimeline().getHeight() - height;
+		canvas.drawLine(0, y, context.getTimeline().getWidth(), y, p);
 	}
 
 	private void renderSeparators(final Canvas canvas, final TimelineRenderingContext context) {
@@ -64,7 +64,7 @@ public class DefaultAxisRenderer implements AxisRenderer {
 		if (hints.length == 0)
 			return;
 
-		final float separatorHeight = context.getViewHeight() - height;
+		final float separatorHeight = context.getTimeline().getHeight() - height;
 
 		int i = 0;
 		while (i < hints.length && hints[i].x <= endX) {
@@ -131,5 +131,9 @@ public class DefaultAxisRenderer implements AxisRenderer {
 
 	public Paint getLabel2Paint() {
 		return label2Paint;
+	}
+
+	public float getLabelAreaHeight() {
+		return getHeight();
 	}
 }

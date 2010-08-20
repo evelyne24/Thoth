@@ -12,8 +12,12 @@ public class MiddleVerticalLocator implements EventVerticalLocator {
 
 	public void computeY(final TimelineRenderingContext context) {
 		final int size = context.getEventsX().size();
-		final float middle = context.getViewHeight() / 2;
+		final float middle = getMiddle(context.getTimeline().getHeight());
 		context.setEventsY(new FakeArrayFlatFloat(middle, size));
+	}
+
+	protected float getMiddle(final int viewHeight) {
+		return viewHeight / 2;
 	}
 
 }

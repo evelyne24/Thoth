@@ -1,8 +1,9 @@
 package org.codeandmagic.timeline;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 
 import org.codeandmagic.util.FakeArrayFloat;
 
@@ -23,14 +24,14 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 	private final Events events;
 	private Event selectedEvent;
 
-	private final Collection<TimelineViewAware> listeners;
+	private final List<TimelineViewAware> listeners;
 
-	private EventHorizontalLocator horizontalLayout;
-	private EventVerticalLocator verticalLayout;
-	private EventIconRenderer iconRenderer;
-	private AxisHorizontalLocator axisHorizontalLayout;
-	private AxisRenderer axisRenderer;
+	private EventHorizontalLocator horizontalLocator;
+	private EventVerticalLocator verticalLocator;
+	private AxisHorizontalLocator axisHorizontalLocator;
 	private BackgroundRenderer backgroundRenderer;
+	private AxisRenderer axisRenderer;
+	private EventIconRenderer iconRenderer;
 	private EventDetailsRenderer eventRenderer;
 
 	private final Date zeroDate = new Date();
@@ -64,25 +65,35 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 		super(context);
 		gestureDetector = new GestureDetector(this);
 
-		listeners = new HashSet<TimelineViewAware>();
+		listeners = new ArrayList<TimelineViewAware>();
+		// add 1 null entry for each locator and renderer so each has a reserved spot
+		for (int i = 0; i < 7; i++) {
+			listeners.add(null);
+		}
 
 		events = new Events();
 		events.addChangeListener(this);
 
-		setHorizontalLayout(horizontalLayout);
-		setVerticalLayout(verticalLayout);
+		setHorizontalLocator(horizontalLayout);
+		setVerticalLocator(verticalLayout);
 		setIconRenderer(iconRenderer);
-		setAxisHorizontalLayout(axisHorizontalLayout);
+		setAxisHorizontalLocator(axisHorizontalLayout);
 		setAxisRenderer(xAxisRenderer);
 		setBackgroundRenderer(backgroundRenderer);
 		setEventRenderer(eventRenderer);
 
-		for (final TimelineViewAware listener : listeners) {
-			listener.timelineViewContructed(this);
-		}
+		notifyContructed();
 
 		innerView = new TimelineInnerView(context);
 		addView(innerView);
+	}
+
+	protected void notifyContructed() {
+		for (final TimelineViewAware listener : listeners) {
+			if (listener != null) {
+				listener.timelineViewContructed(this);
+			}
+		}
 	}
 
 	@Override
@@ -123,17 +134,29 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 	protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
 		Log.d("Timeline", "View size changed!");
-		for (final TimelineViewAware listener : listeners) {
-			listener.timelineViewSizeChanged(this, w, h, oldw, oldh);
-		}
+		notifySizeChanged(w, h, oldw, oldh);
 		invalidate();
 	}
 
-	public void eventsChanged(final Events events, final Collection<Event> added, final Collection<Event> removed) {
+	protected void notifySizeChanged(final int w, final int h, final int oldw, final int oldh) {
 		for (final TimelineViewAware listener : listeners) {
-			listener.timelineViewEventsChanged(this, events, added, removed);
+			if (listener != null) {
+				listener.timelineViewSizeChanged(this, w, h, oldw, oldh);
+			}
 		}
+	}
+
+	public void eventsChanged(final Events events, final Collection<Event> added, final Collection<Event> removed) {
+		notifyEventsChanged(events, added, removed);
 		invalidate();
+	}
+
+	protected void notifyEventsChanged(final Events events2, final Collection<Event> added, final Collection<Event> removed) {
+		for (final TimelineViewAware listener : listeners) {
+			if (listener != null) {
+				listener.timelineViewEventsChanged(this, events, added, removed);
+			}
+		}
 	}
 
 	private TimelineRenderingContext recalculate() {
@@ -141,14 +164,12 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 		final TimelineRenderingContext renderingContext = new TimelineRenderingContext();
 
 		renderingContext.setTimeline(this);
-		renderingContext.setViewWidth(getWidth());
-		renderingContext.setViewHeight(getHeight());
 		renderingContext.setViewStartX(currentX);
 		renderingContext.setViewEndX(currentX + getWidth());
 
-		horizontalLayout.computeX(renderingContext);
-		verticalLayout.computeY(renderingContext);
-		axisHorizontalLayout.computeX(renderingContext);
+		horizontalLocator.computeX(renderingContext);
+		verticalLocator.computeY(renderingContext);
+		axisHorizontalLocator.computeX(renderingContext);
 
 		return renderingContext;
 	}
@@ -193,10 +214,15 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 	public void eventClicked(final Event event, final float eventX, final float eventY, final float clickX, final float clickY) {
 		Log.d("Timeline", "Event Clicked! e:" + event.toString());
 		setSelectedEvent(event);
+		notifyEventSelected(event, eventX, eventY);
+	}
+
+	protected void notifyEventSelected(final Event event, final float eventX, final float eventY) {
 		for (final TimelineViewAware listener : listeners) {
-			listener.timelineViewEventSelected(this, event, eventX, eventY);
+			if (listener != null) {
+				listener.timelineViewEventSelected(this, event, eventX, eventY);
+			}
 		}
-		eventRenderer.eventSelected(this, event, eventX, eventY);
 	}
 
 	public void setSelectedEvent(final Event selectedEvent) {
@@ -223,47 +249,59 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 		listeners.remove(listener);
 	}
 
-	public EventHorizontalLocator getHorizontalLayout() {
-		return horizontalLayout;
+	public EventHorizontalLocator getHorizontalLocator() {
+		return horizontalLocator;
 	}
 
-	public void setHorizontalLayout(final EventHorizontalLocator horizontalLayout) {
-		this.horizontalLayout = horizontalLayout;
-		if (horizontalLayout instanceof TimelineViewAware) {
-			addListener((TimelineViewAware) horizontalLayout);
+	public void setHorizontalLocator(final EventHorizontalLocator horizontalLocator) {
+		this.horizontalLocator = horizontalLocator;
+		if (horizontalLocator instanceof TimelineViewAware) {
+			listeners.set(0, (TimelineViewAware) horizontalLocator);
+		}
+		else {
+			listeners.set(0, null);
 		}
 	}
 
-	public EventVerticalLocator getVerticalLayout() {
-		return verticalLayout;
+	public EventVerticalLocator getVerticalLocator() {
+		return verticalLocator;
 	}
 
-	public void setVerticalLayout(final EventVerticalLocator verticalLayout) {
-		this.verticalLayout = verticalLayout;
-		if (verticalLayout instanceof TimelineViewAware) {
-			addListener((TimelineViewAware) verticalLayout);
+	public void setVerticalLocator(final EventVerticalLocator verticalLocator) {
+		this.verticalLocator = verticalLocator;
+		if (verticalLocator instanceof TimelineViewAware) {
+			listeners.set(1, (TimelineViewAware) verticalLocator);
+		}
+		else {
+			listeners.set(1, null);
 		}
 	}
 
-	public EventIconRenderer getIconRenderer() {
-		return iconRenderer;
+	public AxisHorizontalLocator getAxisHorizontalLocator() {
+		return axisHorizontalLocator;
 	}
 
-	public void setIconRenderer(final EventIconRenderer iconRenderer) {
-		this.iconRenderer = iconRenderer;
-		if (iconRenderer instanceof TimelineViewAware) {
-			addListener((TimelineViewAware) iconRenderer);
+	public void setAxisHorizontalLocator(final AxisHorizontalLocator axisHorizontalLocator) {
+		this.axisHorizontalLocator = axisHorizontalLocator;
+		if (axisHorizontalLocator instanceof TimelineViewAware) {
+			listeners.set(2, (TimelineViewAware) axisHorizontalLocator);
+		}
+		else {
+			listeners.set(2, null);
 		}
 	}
 
-	public AxisHorizontalLocator getAxisHorizontalLayout() {
-		return axisHorizontalLayout;
+	public BackgroundRenderer getBackgroundRenderer() {
+		return backgroundRenderer;
 	}
 
-	public void setAxisHorizontalLayout(final AxisHorizontalLocator axisHorizontalLayout) {
-		this.axisHorizontalLayout = axisHorizontalLayout;
-		if (axisHorizontalLayout instanceof TimelineViewAware) {
-			addListener((TimelineViewAware) axisHorizontalLayout);
+	public void setBackgroundRenderer(final BackgroundRenderer backgroundRenderer) {
+		this.backgroundRenderer = backgroundRenderer;
+		if (backgroundRenderer instanceof TimelineViewAware) {
+			listeners.set(3, (TimelineViewAware) backgroundRenderer);
+		}
+		else {
+			listeners.set(3, null);
 		}
 	}
 
@@ -274,26 +312,42 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 	public void setAxisRenderer(final AxisRenderer axisRenderer) {
 		this.axisRenderer = axisRenderer;
 		if (axisRenderer instanceof TimelineViewAware) {
-			addListener((TimelineViewAware) axisRenderer);
+			listeners.set(4, (TimelineViewAware) axisRenderer);
+		}
+		else {
+			listeners.set(4, null);
 		}
 	}
 
-	public BackgroundRenderer getBackgroundRenderer() {
-		return backgroundRenderer;
+	public EventIconRenderer getIconRenderer() {
+		return iconRenderer;
 	}
 
-	public void setBackgroundRenderer(final BackgroundRenderer backgroundRenderer) {
-		this.backgroundRenderer = backgroundRenderer;
-		if (axisRenderer instanceof TimelineViewAware) {
-			addListener((TimelineViewAware) backgroundRenderer);
+	public void setIconRenderer(final EventIconRenderer iconRenderer) {
+		this.iconRenderer = iconRenderer;
+		if (iconRenderer instanceof TimelineViewAware) {
+			listeners.set(5, (TimelineViewAware) iconRenderer);
 		}
-	}
-
-	public void setEventRenderer(final EventDetailsRenderer eventRenderer) {
-		this.eventRenderer = eventRenderer;
+		else {
+			listeners.set(5, null);
+		}
 	}
 
 	public EventDetailsRenderer getEventRenderer() {
 		return eventRenderer;
+	}
+
+	public void setEventRenderer(final EventDetailsRenderer eventRenderer) {
+		this.eventRenderer = eventRenderer;
+		if (eventRenderer instanceof TimelineViewAware) {
+			listeners.set(6, (TimelineViewAware) eventRenderer);
+		}
+		else {
+			listeners.set(6, null);
+		}
+	}
+
+	public float getEventsMaxY() {
+		return getHeight() - axisRenderer.getLabelAreaHeight();
 	}
 }
