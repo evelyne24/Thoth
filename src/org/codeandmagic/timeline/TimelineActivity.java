@@ -23,7 +23,7 @@ public class TimelineActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		final LinearEventHorizontalLocator ehl = new LinearEventHorizontalLocator();
-		final MiddleVerticalLocator evl = new DodgeVerticalLocator(ehl);
+		final DodgeVerticalLocator evl = new DodgeVerticalLocator(ehl);
 		final ThothIconRenderer eir = new ThothIconRenderer();
 		final LinearAxisHorizontalLocator ahl = new LinearAxisHorizontalLocator(ehl);
 		final DefaultAxisRenderer ar = new DefaultAxisRenderer();
@@ -37,10 +37,10 @@ public class TimelineActivity extends Activity {
 	}
 
 	private void setTestData() {
-		setLotsOfDate();
+		setLotsOfData();
 	}
 
-	private void setStaticData() {
+	void setStaticData() {
 		final long now = (new Date()).getTime();
 
 		final Thoth t1 = new PictureThoth();
@@ -66,7 +66,7 @@ public class TimelineActivity extends Activity {
 		tv.getEvents().add(t1, t2, t3, t4, t5);
 	}
 
-	private void setLotsOfDate() {
+	void setLotsOfData() {
 		final int nrEvents = 100;
 		final long now = (new Date()).getTime();
 		final long min = now - TimeUtils.DAY * 10;

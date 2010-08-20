@@ -1,10 +1,5 @@
 package org.codeandmagic.timeline;
 
-import java.util.Collection;
-
-import org.codeandmagic.util.FakeArrayFlatFloat;
-import org.codeandmagic.util.FakeArrayLinkFloat;
-
 import android.util.Log;
 
 /**
@@ -15,9 +10,8 @@ import android.util.Log;
  * @author cristi
  * 
  */
-public class DodgeVerticalLocator extends MiddleVerticalLocator implements TimelineViewAware {
+public class DodgeVerticalLocator extends PrecachedEventVerticalLocator {
 
-	private float[] cache;
 	private final PrecachedEventHorizontalLocator horizontalLocator;
 	private float maxInterferingDistance = 200;
 	private float verticalStep = 30;
@@ -27,23 +21,12 @@ public class DodgeVerticalLocator extends MiddleVerticalLocator implements Timel
 	}
 
 	@Override
-	public void computeY(final TimelineRenderingContext context) {
-		final int firstEventIndex = context.getFirtEventIndex();
-		final int lastEventIndex = context.getLastEventIndex();
-		if (firstEventIndex == -1 && lastEventIndex == 1) {
-			context.setEventsX(new FakeArrayFlatFloat(0, 0));
-			return;
-		}
-		context.setEventsY(new FakeArrayLinkFloat(cache, firstEventIndex, lastEventIndex));
-	}
-
 	public void reCache(final TimelineView timelineView) {
 		Log.d("Thoth", "Recaching the y position of events!");
 		final float[] xCache = horizontalLocator.getCache();
-		final int len = xCache.length; // ////////////////////////////////// MAKE SURE THIS IS CALLED AFTER HORIZONTAL_LOCATOR IS
-		// CALLED
+		final int len = xCache.length;
 		cache = new float[len];
-		final float middle = getMiddle(timelineView.getHeight()) - 20;
+		final float middle = timelineView.getHeight() / 2 - 20;
 		final float max = timelineView.getEventsMaxY();
 		final int nrLanes = (int) (max / verticalStep);
 
@@ -86,26 +69,6 @@ public class DodgeVerticalLocator extends MiddleVerticalLocator implements Timel
 			}
 
 		}
-	}
-
-	public void timelineViewEventsChanged(final TimelineView timelineView, final Events events, final Collection<Event> added,
-			final Collection<Event> removed) {
-		if (cache != null || timelineView.getWidth() > 0) {
-			reCache(timelineView);
-		}
-	}
-
-	public void timelineViewSizeChanged(final TimelineView timelineView, final int w, final int h, final int oldw, final int oldh) {
-		if (cache == null) {
-			reCache(timelineView);
-		}
-	}
-
-	public void timelineViewContructed(final TimelineView timelineView) {
-	}
-
-	public void timelineViewEventSelected(final TimelineView timelineView, final Event event, final float eventX,
-			final float eventY) {
 	}
 
 	public void setMaxInterferingDistance(final float maxInterferingDistance) {
