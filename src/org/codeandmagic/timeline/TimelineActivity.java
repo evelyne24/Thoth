@@ -23,7 +23,7 @@ public class TimelineActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		final LinearEventHorizontalLocator ehl = new LinearEventHorizontalLocator();
-		final DodgeVerticalLocator evl = new DodgeVerticalLocator(ehl);
+		final DiagonalVerticalLocator evl = new DiagonalVerticalLocator();
 		final ThothIconRenderer eir = new ThothIconRenderer();
 		final LinearAxisHorizontalLocator ahl = new LinearAxisHorizontalLocator(ehl);
 		final DefaultAxisRenderer ar = new DefaultAxisRenderer();

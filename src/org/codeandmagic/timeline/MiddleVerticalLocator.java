@@ -4,6 +4,7 @@ import org.codeandmagic.util.FakeArrayFlatFloat;
 
 /**
  * Basic implementation for {@link EventVerticalLocator} which positions all events on the vertical middle of the timeline view.
+ * Suitable for few events that are considerably far apart (horizontally) so that their icon and label doesn't overlap.
  * 
  * @author cristi
  * 
