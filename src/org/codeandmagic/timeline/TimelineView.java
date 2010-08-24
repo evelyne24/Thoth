@@ -28,7 +28,7 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 
 	private EventHorizontalLocator horizontalLocator;
 	private EventVerticalLocator verticalLocator;
-	private AxisHorizontalLocator axisHorizontalLocator;
+	private AxisLocator axisHorizontalLocator;
 	private BackgroundRenderer backgroundRenderer;
 	private AxisRenderer axisRenderer;
 	private EventIconRenderer iconRenderer;
@@ -59,7 +59,7 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 
 	public TimelineView(final Context context, final EventHorizontalLocator horizontalLayout,
 			final EventVerticalLocator verticalLayout, final EventIconRenderer iconRenderer,
-			final AxisHorizontalLocator axisHorizontalLayout, final AxisRenderer xAxisRenderer,
+			final AxisLocator axisHorizontalLayout, final AxisRenderer xAxisRenderer,
 			final BackgroundRenderer backgroundRenderer, final EventDetailsRenderer eventRenderer) {
 
 		super(context);
@@ -277,11 +277,11 @@ public class TimelineView extends RelativeLayout implements EventsChangeListener
 		}
 	}
 
-	public AxisHorizontalLocator getAxisHorizontalLocator() {
+	public AxisLocator getAxisHorizontalLocator() {
 		return axisHorizontalLocator;
 	}
 
-	public void setAxisHorizontalLocator(final AxisHorizontalLocator axisHorizontalLocator) {
+	public void setAxisHorizontalLocator(final AxisLocator axisHorizontalLocator) {
 		this.axisHorizontalLocator = axisHorizontalLocator;
 		if (axisHorizontalLocator instanceof TimelineViewAware) {
 			listeners.set(2, (TimelineViewAware) axisHorizontalLocator);

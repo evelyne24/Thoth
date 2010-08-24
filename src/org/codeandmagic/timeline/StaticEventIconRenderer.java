@@ -238,12 +238,12 @@ public class StaticEventIconRenderer implements EventIconRenderer, TimelineViewA
 
 		public String getLabel(final Event e) {
 			final String fullName = e.getName();
-			if (maxChars >= 0 && maxChars <= 3)
+			if (maxChars == 0)
 				return "";
 			else if (maxChars < 0 || maxChars >= fullName.length() - 3)
 				return fullName;
 			else
-				return new StringBuilder(fullName).substring(0, maxChars - 3).concat(TAIL).toString();
+				return new StringBuilder(fullName).substring(0, maxChars).concat(TAIL).toString();
 		}
 
 		public int getMaxChars() {

@@ -9,14 +9,14 @@ import java.util.Map;
  * @author cristi
  * 
  */
-public class ImagePerClassEventIconRenderer extends DynamicEventIconRenderer {
-	private Map<Class<?>, Integer> associations;
+public class ImagePerClassIconRenderer extends DynamicEventIconRenderer {
+	private Map<Class<? extends Event>, Integer> associations;
 
-	public Map<Class<?>, Integer> getAssociations() {
+	public Map<Class<? extends Event>, Integer> getAssociations() {
 		return associations;
 	}
 
-	public void setAssociations(final Map<Class<?>, Integer> associations) {
+	public void setAssociations(final Map<Class<? extends Event>, Integer> associations) {
 		this.associations = associations;
 	}
 
@@ -31,7 +31,7 @@ public class ImagePerClassEventIconRenderer extends DynamicEventIconRenderer {
 	@Override
 	public int getDrawableForEvent(final Event event) {
 		if (associations != null) {
-			for (final Map.Entry<Class<?>, Integer> entry : associations.entrySet()) {
+			for (final Map.Entry<Class<? extends Event>, Integer> entry : associations.entrySet()) {
 				if (entry.getKey().isAssignableFrom(event.getClass()))
 					return entry.getValue();
 			}

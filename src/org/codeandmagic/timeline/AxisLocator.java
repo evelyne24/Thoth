@@ -13,7 +13,7 @@ import java.util.Date;
  * @author cristi
  * 
  */
-public interface AxisHorizontalLocator {
+public interface AxisLocator {
 	public void computeX(TimelineRenderingContext context);
 
 	public static class AxisHint {

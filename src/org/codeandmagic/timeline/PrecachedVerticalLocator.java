@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.codeandmagic.util.FakeArrayFlatFloat;
 import org.codeandmagic.util.FakeArrayLinkFloat;
 
-public abstract class PrecachedEventVerticalLocator implements EventVerticalLocator, TimelineViewAware {
+public abstract class PrecachedVerticalLocator implements EventVerticalLocator, TimelineViewAware {
 	protected float[] cache;
 
 	public void computeY(final TimelineRenderingContext context) {

@@ -10,13 +10,13 @@ import android.util.Log;
  * @author cristi
  * 
  */
-public class DodgeVerticalLocator extends PrecachedEventVerticalLocator {
+public class DodgeVerticalLocator extends PrecachedVerticalLocator {
 
-	private final PrecachedEventHorizontalLocator horizontalLocator;
+	private final PrecachedHorizontalLocator horizontalLocator;
 	private float maxInterferingDistance = 200;
 	private float verticalStep = 30;
 
-	public DodgeVerticalLocator(final PrecachedEventHorizontalLocator horizontalLocator) {
+	public DodgeVerticalLocator(final PrecachedHorizontalLocator horizontalLocator) {
 		this.horizontalLocator = horizontalLocator;
 	}
 
@@ -50,7 +50,7 @@ public class DodgeVerticalLocator extends PrecachedEventVerticalLocator {
 			else {
 				// check all possible positions if they're free. middle is skipped because of the previous check. we check
 				// middle-1step, then middle+1step, then 2 steps up, 2 steps down...
-				eachPossiblePosition: for (z = 1, sign = -1; z < nrLanes; ++z, sign *= -1) {
+				eachPossiblePosition: for (z = 0, sign = -1; z < nrLanes; ++z, sign *= -1) {
 					y = middle + sign * verticalStep * ((z + 1) / 2);
 					// for all valid neighbors check distance
 					for (j = firstNeighbor; j < i; ++j) {

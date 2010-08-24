@@ -14,7 +14,7 @@ import android.util.Log;
  * @author cristi
  * 
  */
-public abstract class PrecachedEventHorizontalLocator implements EventHorizontalLocator, TimelineViewAware {
+public abstract class PrecachedHorizontalLocator implements EventHorizontalLocator, TimelineViewAware {
 
 	protected float[] cache;
 

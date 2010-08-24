@@ -7,26 +7,26 @@ import java.util.Date;
 import org.codeandmagic.util.TimeUtils;
 
 /**
- * {@link AxisHorizontalLocator} that positions the axes temporary linear, similar with how {@link LinearEventHorizontalLocator}
+ * {@link AxisLocator} that positions the axes temporary linear, similar with how {@link LinearHorizontalLocator}
  * positions {@link Event}s. You can specify the number of axes through {@link #setTimeStep(int)}.<br />
  * <p style="color:red">
- * WARNING: This class should be used only together with a {@link LinearEventHorizontalLocator} or a
+ * WARNING: This class should be used only together with a {@link LinearHorizontalLocator} or a
  * {@link EventHorizontalLocator} that uses a linear time formula and doesn't have gaps. <br>
- * YOU NEED TO SYNCHRONIZE THE SCALE SET IN THIS CLASS AND THE ONE SET ON THE {@link LinearEventHorizontalLocator}.
+ * YOU NEED TO SYNCHRONIZE THE SCALE SET IN THIS CLASS AND THE ONE SET ON THE {@link LinearHorizontalLocator}.
  * </p>
  * 
  * @author cristi
  * 
  */
-public class LinearAxisHorizontalLocator implements AxisHorizontalLocator {
+public class LinearAxisLocator implements AxisLocator {
 
 	private int timeStep;
 	private float scale;
 
-	public LinearAxisHorizontalLocator(final LinearEventHorizontalLocator ehl) {
+	public LinearAxisLocator(final LinearHorizontalLocator ehl) {
 		// defaults
 		setTimeStep(6); // 6 HOURS
-		setScale(LinearEventHorizontalLocator.DEFAULT_SCALE);
+		setScale(LinearHorizontalLocator.DEFAULT_SCALE);
 	}
 
 	public void computeX(final TimelineRenderingContext context) {
@@ -76,9 +76,9 @@ public class LinearAxisHorizontalLocator implements AxisHorizontalLocator {
 
 	/**
 	 * Sets the time scale. The time scale represents the number of milliseconds that are compressed into one pixel. WARNING: This
-	 * class should be used only together with a {@link LinearEventHorizontalLocator} or a
+	 * class should be used only together with a {@link LinearHorizontalLocator} or a
 	 * <p style="color:red">
-	 * YOU NEED TO SYNCHRONIZE THIS WITH THE SCALE SET ON THE {@link LinearEventHorizontalLocator}.
+	 * YOU NEED TO SYNCHRONIZE THIS WITH THE SCALE SET ON THE {@link LinearHorizontalLocator}.
 	 * </p>
 	 * 
 	 * @param scale

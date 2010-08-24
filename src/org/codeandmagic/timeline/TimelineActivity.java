@@ -1,17 +1,23 @@
 package org.codeandmagic.timeline;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
+import org.codeandmagic.thoth.R;
 import org.codeandmagic.thoth.data.PictureThoth;
 import org.codeandmagic.thoth.data.TextThoth;
 import org.codeandmagic.thoth.data.Thoth;
 import org.codeandmagic.thoth.data.VideoThoth;
 import org.codeandmagic.thoth.timeline.ThothEventRenderer;
-import org.codeandmagic.thoth.timeline.ThothIconRenderer;
+import org.codeandmagic.timeline.StaticEventIconRenderer.TimeAndNameEventLabelFormat;
 import org.codeandmagic.util.TimeUtils;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 public class TimelineActivity extends Activity {
@@ -22,13 +28,35 @@ public class TimelineActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		final LinearEventHorizontalLocator ehl = new LinearEventHorizontalLocator();
-		final DiagonalVerticalLocator evl = new DiagonalVerticalLocator();
-		final ThothIconRenderer eir = new ThothIconRenderer();
-		final LinearAxisHorizontalLocator ahl = new LinearAxisHorizontalLocator(ehl);
+		final LinearHorizontalLocator ehl = new LinearHorizontalLocator();
+		final DodgeVerticalLocator evl = new DodgeVerticalLocator(ehl);
+		evl.setVerticalStep(50);
+		final LinearAxisLocator ahl = new LinearAxisLocator(ehl);
 		final DefaultAxisRenderer ar = new DefaultAxisRenderer();
 		final ColorBackgroundRenderer br = new ColorBackgroundRenderer();
 		final ThothEventRenderer er = new ThothEventRenderer();
+
+		final ImagePerClassIconRenderer eir = new ImagePerClassIconRenderer();
+		eir.setIconHeight(25);
+		eir.setIconWidth(25);
+		final Map<Class<? extends Event>, Integer> assoc = new HashMap<Class<? extends Event>, Integer>();
+		assoc.put(PictureThoth.class, R.drawable.photo);
+		assoc.put(VideoThoth.class, R.drawable.video);
+		assoc.put(TextThoth.class, R.drawable.text);
+		eir.setAssociations(assoc);
+		final TimeAndNameEventLabelFormat labelFormat = new TimeAndNameEventLabelFormat();
+		labelFormat.setMaxChars(-1);
+		labelFormat.setDateFormat("dd/MM/yyy hh:mm a - ");
+		labelFormat.setDateInFront(true);
+		eir.setLabelFormat(labelFormat);
+		eir.setLabelTop(17);
+		eir.setLabelLeft(31);
+		final Paint p = new Paint();
+		p.setColor(Color.WHITE);
+		p.setTextSize(12);
+		p.setAntiAlias(true);
+		p.setTypeface(Typeface.DEFAULT_BOLD);
+		eir.setLabelPaint(p);
 
 		tv = new TimelineView(this, ehl, evl, eir, ahl, ar, br, er);
 		setTestData();
@@ -37,7 +65,8 @@ public class TimelineActivity extends Activity {
 	}
 
 	private void setTestData() {
-		setLotsOfData();
+		// setLotsOfData();
+		setStaticData();
 	}
 
 	void setStaticData() {
@@ -47,23 +76,27 @@ public class TimelineActivity extends Activity {
 		t1.setName("T1 Picture Thoth");
 		t1.setDate(new Date(now - TimeUtils.DAY * 2));
 
+		final Thoth t15 = new VideoThoth();
+		t15.setName("T1.5 Video Thoth");
+		t15.setDate(new Date(now - TimeUtils.DAY * 3 - TimeUtils.HOUR * 5));
+
 		final Thoth t2 = new VideoThoth();
 		t2.setName("T2 Video Thoth");
-		t2.setDate(new Date(now - TimeUtils.DAY * 3 + TimeUtils.HOUR * 5));
+		t2.setDate(new Date(now - TimeUtils.DAY * 3 + TimeUtils.HOUR * 8));
 
 		final Thoth t3 = new TextThoth();
 		t3.setName("T3 Text Thoth");
-		t3.setDate(new Date(now - TimeUtils.DAY - TimeUtils.HOUR * 16));
+		t3.setDate(new Date(now - TimeUtils.DAY - TimeUtils.HOUR * 10));
 
 		final Thoth t4 = new TextThoth();
 		t4.setName("T4 Text Thoth");
-		t4.setDate(new Date(now - TimeUtils.DAY));
+		t4.setDate(new Date(now - TimeUtils.DAY - TimeUtils.HOUR * 2));
 
 		final Thoth t5 = new TextThoth();
 		t5.setName("T5 Text Thoth");
 		t5.setDate(new Date(now + TimeUtils.DAY));
 
-		tv.getEvents().add(t1, t2, t3, t4, t5);
+		tv.getEvents().add(t1, t15, t2, t3, t4, t5);
 	}
 
 	void setLotsOfData() {

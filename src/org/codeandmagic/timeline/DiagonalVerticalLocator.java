@@ -8,7 +8,7 @@ package org.codeandmagic.timeline;
  * @author cristi
  * 
  */
-public class DiagonalVerticalLocator extends PrecachedEventVerticalLocator {
+public class DiagonalVerticalLocator extends PrecachedVerticalLocator {
 
 	private float verticalStep = 40;
 

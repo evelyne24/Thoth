@@ -14,7 +14,7 @@ import android.util.Log;
  * @author cristi
  * 
  */
-public class LinearEventHorizontalLocator extends PrecachedEventHorizontalLocator {
+public class LinearHorizontalLocator extends PrecachedHorizontalLocator {
 
 	/**
 	 * The scale factor represents how many time units (milliseconds) are compacted into one pixel
@@ -22,7 +22,7 @@ public class LinearEventHorizontalLocator extends PrecachedEventHorizontalLocato
 	private float scale;
 	public static final float DEFAULT_SCALE = TimeUtils.DAY * 3 / 600;
 
-	public LinearEventHorizontalLocator() {
+	public LinearHorizontalLocator() {
 		setScale(DEFAULT_SCALE);
 	}
 
