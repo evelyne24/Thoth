@@ -13,4 +13,5 @@ public class MainScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		startActivity(new Intent(MainScreen.this, TimelineActivity.class));
 	}
+
 }

@@ -3,7 +3,9 @@
       package="org.codeandmagic.thoth"
       android:versionCode="1"
       android:versionName="1.0">
+
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
+
         <activity android:name=".MainScreen"
                   android:label="@string/app_name">
             <intent-filter>
@@ -12,8 +14,14 @@
             </intent-filter>
         </activity>
 
+
     <activity android:name="org.codeandmagic.timeline.TimelineActivity" android:screenOrientation="landscape"></activity>
 </application>
 
+
+	<uses-sdk 
+    	android:minSdkVersion="3"
+    	android:targetSdkVersion="4"
+    	/>
 
 </manifest> 
