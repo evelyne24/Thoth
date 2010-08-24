@@ -1,3 +1,22 @@
+/*
+	Copyright © 2010, Evelina Vrabie, Cristian Vrabie, All rights reserved 
+ 
+	This file is part of Thoth.
+
+	Thoth is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Thoth is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Lesser General Public License for more details.
+
+	You should have received a copy of the GNU Lesser General Public License
+	along with Thoth.  If not, see <http://www.gnu.org/licenses/>.
+	
+ */
 package org.codeandmagic.thoth.miscwidgets;
 
 import org.codeandmagic.thoth.R;
@@ -54,23 +73,24 @@ import android.widget.LinearLayout;
  */
 public class Panel extends LinearLayout {
 
-    private static final String TAG = "Panel";
+	private static final String TAG = "Panel";
 
 	/**
-     * Callback invoked when the panel is opened/closed.
-     */
-    public static interface OnPanelListener {
-        /**
-         * Invoked when the panel becomes fully closed.
-         */
-        public void onPanelClosed(Panel panel);
-        /**
-         * Invoked when the panel becomes fully opened.
-         */
-        public void onPanelOpened(Panel panel);
-    }
-    
-    private boolean mIsShrinking;
+	 * Callback invoked when the panel is opened/closed.
+	 */
+	public static interface OnPanelListener {
+		/**
+		 * Invoked when the panel becomes fully closed.
+		 */
+		public void onPanelClosed(Panel panel);
+
+		/**
+		 * Invoked when the panel becomes fully opened.
+		 */
+		public void onPanelOpened(Panel panel);
+	}
+
+	private boolean mIsShrinking;
 	private final int mPosition;
 	private final int mDuration;
 	private final boolean mLinearFlying;
@@ -83,21 +103,18 @@ public class Panel extends LinearLayout {
 	private float mTrackX;
 	private float mTrackY;
 	private float mVelocity;
-	
+
 	private OnPanelListener panelListener;
 
 	public static final int TOP = 0;
 	public static final int BOTTOM = 1;
 	public static final int LEFT = 2;
 	public static final int RIGHT = 3;
-	
+
 	private enum State {
-		ABOUT_TO_ANIMATE,
-		ANIMATING,
-		READY,
-		TRACKING,
-		FLYING,
+		ABOUT_TO_ANIMATE, ANIMATING, READY, TRACKING, FLYING,
 	};
+
 	private State mState;
 	private Interpolator mInterpolator;
 	private final GestureDetector mGestureDetector;
@@ -107,14 +124,14 @@ public class Panel extends LinearLayout {
 	private float mWeight;
 	private final PanelOnGestureListener mGestureListener;
 	private boolean mBringToFront;
-	
+
 	public Panel(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Panel);
-		mDuration = a.getInteger(R.styleable.Panel_animationDuration, 750);		// duration defaults to 750 ms
-		mPosition = a.getInteger(R.styleable.Panel_position, BOTTOM);			// position defaults to BOTTOM
-		mLinearFlying = a.getBoolean(R.styleable.Panel_linearFlying, false);	// linearFlying defaults to false
-		mWeight = a.getFraction(R.styleable.Panel_weight, 0, 1, 0.0f);			// weight defaults to 0.0
+		mDuration = a.getInteger(R.styleable.Panel_animationDuration, 750); // duration defaults to 750 ms
+		mPosition = a.getInteger(R.styleable.Panel_position, BOTTOM); // position defaults to BOTTOM
+		mLinearFlying = a.getBoolean(R.styleable.Panel_linearFlying, false); // linearFlying defaults to false
+		mWeight = a.getFraction(R.styleable.Panel_weight, 0, 1, 0.0f); // weight defaults to 0.0
 		if (mWeight < 0 || mWeight > 1) {
 			mWeight = 0.0f;
 			Log.w(TAG, a.getPositionDescription() + ": weight must be > 0 and <= 1");
@@ -125,73 +142,72 @@ public class Panel extends LinearLayout {
 		RuntimeException e = null;
 		mHandleId = a.getResourceId(R.styleable.Panel_handle, 0);
 		if (mHandleId == 0) {
-			e = new IllegalArgumentException(a.getPositionDescription() + 
-					": The handle attribute is required and must refer to a valid child.");
+			e = new IllegalArgumentException(a.getPositionDescription()
+					+ ": The handle attribute is required and must refer to a valid child.");
 		}
 		mContentId = a.getResourceId(R.styleable.Panel_content, 0);
 		if (mContentId == 0) {
-			e = new IllegalArgumentException(a.getPositionDescription() + 
-					": The content attribute is required and must refer to a valid child.");
+			e = new IllegalArgumentException(a.getPositionDescription()
+					+ ": The content attribute is required and must refer to a valid child.");
 		}
 		a.recycle();
-		
+
 		if (e != null) {
 			throw e;
 		}
-		mOrientation = (mPosition == TOP || mPosition == BOTTOM)? VERTICAL : HORIZONTAL;
+		mOrientation = (mPosition == TOP || mPosition == BOTTOM) ? VERTICAL : HORIZONTAL;
 		setOrientation(mOrientation);
 		mState = State.READY;
 		mGestureListener = new PanelOnGestureListener();
 		mGestureDetector = new GestureDetector(mGestureListener);
 		mGestureDetector.setIsLongpressEnabled(false);
-		
+
 		// i DON'T really know why i need this...
 		// setBaselineAligned(false);
 	}
 
-    /**
-     * Sets the listener that receives a notification when the panel becomes open/close.
-     *
-     * @param onPanelListener The listener to be notified when the panel is opened/closed.
-     */
-    public void setOnPanelListener(OnPanelListener onPanelListener) {
-        panelListener = onPanelListener;
-    }
-    
-    /**
-     * Gets Panel's mHandle
-     * 
-     * @return Panel's mHandle
-     */
-    public View getHandle() {
+	/**
+	 * Sets the listener that receives a notification when the panel becomes open/close.
+	 * 
+	 * @param onPanelListener The listener to be notified when the panel is opened/closed.
+	 */
+	public void setOnPanelListener(OnPanelListener onPanelListener) {
+		panelListener = onPanelListener;
+	}
+
+	/**
+	 * Gets Panel's mHandle
+	 * 
+	 * @return Panel's mHandle
+	 */
+	public View getHandle() {
 		return mHandle;
 	}
-    
-    /**
-     * Gets Panel's mContent
-     * 
-     * @return Panel's mContent 
-     */
-    public View getContent() {
+
+	/**
+	 * Gets Panel's mContent
+	 * 
+	 * @return Panel's mContent
+	 */
+	public View getContent() {
 		return mContent;
 	}
 
-    
-    /**
-     * Sets the acceleration curve for panel's animation.
-     * 
-     * @param i The interpolator which defines the acceleration curve 
-     */
-    public void setInterpolator(Interpolator i) {
-    	mInterpolator = i; 
-    }
-    
+	/**
+	 * Sets the acceleration curve for panel's animation.
+	 * 
+	 * @param i The interpolator which defines the acceleration curve
+	 */
+	public void setInterpolator(Interpolator i) {
+		mInterpolator = i;
+	}
+
 	/**
 	 * Set the opened state of Panel.
-     * 
-     * @param open True if Panel is to be opened, false if Panel is to be closed.
+	 * 
+	 * @param open True if Panel is to be opened, false if Panel is to be closed.
 	 * @param animate True if use animation, false otherwise.
-	 *
+	 * 
 	 * @return True if operation was performed, false otherwise.
 	 * 
 	 */
@@ -206,8 +222,9 @@ public class Panel extends LinearLayout {
 					mContent.setVisibility(VISIBLE);
 				}
 				post(startAnimation);
-			} else {
-				mContent.setVisibility(open? VISIBLE : GONE);
+			}
+			else {
+				mContent.setVisibility(open ? VISIBLE : GONE);
 				postProcess();
 			}
 			return true;
@@ -215,11 +232,11 @@ public class Panel extends LinearLayout {
 		return false;
 	}
 
-    /**
-     * Returns the opened status for Panel.
-     * 
-     * @return True if Panel is opened, false otherwise.
-     */
+	/**
+	 * Returns the opened status for Panel.
+	 * 
+	 * @return True if Panel is opened, false otherwise.
+	 */
 	public boolean isOpen() {
 		return mContent.getVisibility() == VISIBLE;
 	}
@@ -230,15 +247,15 @@ public class Panel extends LinearLayout {
 		mHandle = findViewById(mHandleId);
 		if (mHandle == null) {
 			String name = getResources().getResourceEntryName(mHandleId);
-            throw new RuntimeException("Your Panel must have a child View whose id attribute is 'R.id." + name + "'");
+			throw new RuntimeException("Your Panel must have a child View whose id attribute is 'R.id." + name + "'");
 		}
 		mHandle.setOnTouchListener(touchListener);
 		mHandle.setOnClickListener(clickListener);
-		
+
 		mContent = findViewById(mContentId);
 		if (mContent == null) {
 			String name = getResources().getResourceEntryName(mHandleId);
-            throw new RuntimeException("Your Panel must have a child View whose id attribute is 'R.id." + name + "'");
+			throw new RuntimeException("Your Panel must have a child View whose id attribute is 'R.id." + name + "'");
 		}
 
 		// reposition children
@@ -247,7 +264,8 @@ public class Panel extends LinearLayout {
 		if (mPosition == TOP || mPosition == LEFT) {
 			addView(mContent);
 			addView(mHandle);
-		} else {
+		}
+		else {
 			addView(mHandle);
 			addView(mContent);
 		}
@@ -261,7 +279,8 @@ public class Panel extends LinearLayout {
 			ViewGroup.LayoutParams params = mContent.getLayoutParams();
 			if (mOrientation == VERTICAL) {
 				params.height = ViewGroup.LayoutParams.FILL_PARENT;
-			} else {
+			}
+			else {
 				params.width = ViewGroup.LayoutParams.FILL_PARENT;
 			}
 			mContent.setLayoutParams(params);
@@ -284,14 +303,15 @@ public class Panel extends LinearLayout {
 			if (parent != null) {
 				if (mOrientation == VERTICAL) {
 					heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) (parent.getHeight() * mWeight), MeasureSpec.EXACTLY);
-				} else {
+				}
+				else {
 					widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) (parent.getWidth() * mWeight), MeasureSpec.EXACTLY);
 				}
 			}
 		}
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
-	
+
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		super.onLayout(changed, l, t, r, b);
@@ -304,13 +324,14 @@ public class Panel extends LinearLayout {
 		// this is why 'mState' was added:
 		// avoid flicker before animation start
 		if (mState == State.ABOUT_TO_ANIMATE && !mIsShrinking) {
-			int delta = mOrientation == VERTICAL? mContentHeight : mContentWidth;
+			int delta = mOrientation == VERTICAL ? mContentHeight : mContentWidth;
 			if (mPosition == LEFT || mPosition == TOP) {
 				delta = -delta;
 			}
 			if (mOrientation == VERTICAL) {
 				canvas.translate(0, delta);
-			} else {
+			}
+			else {
 				canvas.translate(delta, 0);
 			}
 		}
@@ -319,7 +340,7 @@ public class Panel extends LinearLayout {
 		}
 		super.dispatchDraw(canvas);
 	}
-	
+
 	private float ensureRange(float v, int min, int max) {
 		v = Math.max(v, min);
 		v = Math.min(v, max);
@@ -330,12 +351,13 @@ public class Panel extends LinearLayout {
 		int initX;
 		int initY;
 		boolean setInitialPosition;
+
 		public boolean onTouch(View v, MotionEvent event) {
 			if (mState == State.ANIMATING) {
 				// we are animating
 				return false;
 			}
-//			Log.d(TAG, "state: " + mState + " x: " + event.getX() + " y: " + event.getY());
+			// Log.d(TAG, "state: " + mState + " x: " + event.getX() + " y: " + event.getY());
 			int action = event.getAction();
 			if (action == MotionEvent.ACTION_DOWN) {
 				if (mBringToFront) {
@@ -346,13 +368,15 @@ public class Panel extends LinearLayout {
 				if (mContent.getVisibility() == GONE) {
 					// since we may not know content dimensions we use factors here
 					if (mOrientation == VERTICAL) {
-						initY = mPosition == TOP? -1 : 1;
-					} else {
-						initX = mPosition == LEFT? -1 : 1;
+						initY = mPosition == TOP ? -1 : 1;
+					}
+					else {
+						initX = mPosition == LEFT ? -1 : 1;
 					}
 				}
 				setInitialPosition = true;
-			} else {
+			}
+			else {
 				if (setInitialPosition) {
 					// now we know content dimensions, so we multiply factors...
 					initX *= mContentWidth;
@@ -364,7 +388,7 @@ public class Panel extends LinearLayout {
 					initX = -initX;
 					initY = -initY;
 				}
-				// offset every ACTION_MOVE & ACTION_UP event 
+				// offset every ACTION_MOVE & ACTION_UP event
 				event.offsetLocation(initX, initY);
 			}
 			if (!mGestureDetector.onTouchEvent(event)) {
@@ -376,7 +400,7 @@ public class Panel extends LinearLayout {
 			return false;
 		}
 	};
-	
+
 	OnClickListener clickListener = new OnClickListener() {
 		public void onClick(View v) {
 			if (mBringToFront) {
@@ -416,9 +440,10 @@ public class Panel extends LinearLayout {
 			if (mOrientation == VERTICAL) {
 				int height = mContentHeight;
 				if (!mIsShrinking) {
-					fromYDelta = mPosition == TOP? -height : height;
-				} else {
-					toYDelta = mPosition == TOP? -height : height;
+					fromYDelta = mPosition == TOP ? -height : height;
+				}
+				else {
+					toYDelta = mPosition == TOP ? -height : height;
 				}
 				if (mState == State.TRACKING) {
 					if (Math.abs(mTrackY - fromYDelta) < Math.abs(mTrackY - toYDelta)) {
@@ -426,8 +451,8 @@ public class Panel extends LinearLayout {
 						toYDelta = fromYDelta;
 					}
 					fromYDelta = (int) mTrackY;
-				} else
-				if (mState == State.FLYING) {
+				}
+				else if (mState == State.FLYING) {
 					fromYDelta = (int) mTrackY;
 				}
 				// for FLYING events we calculate animation duration based on flying velocity
@@ -435,15 +460,18 @@ public class Panel extends LinearLayout {
 				if (mState == State.FLYING && mLinearFlying) {
 					calculatedDuration = (int) (1000 * Math.abs((toYDelta - fromYDelta) / mVelocity));
 					calculatedDuration = Math.max(calculatedDuration, 20);
-				} else {
+				}
+				else {
 					calculatedDuration = mDuration * Math.abs(toYDelta - fromYDelta) / mContentHeight;
 				}
-			} else {
+			}
+			else {
 				int width = mContentWidth;
 				if (!mIsShrinking) {
-					fromXDelta = mPosition == LEFT? -width : width;
-				} else {
-					toXDelta = mPosition == LEFT? -width : width;
+					fromXDelta = mPosition == LEFT ? -width : width;
+				}
+				else {
+					toXDelta = mPosition == LEFT ? -width : width;
 				}
 				if (mState == State.TRACKING) {
 					if (Math.abs(mTrackX - fromXDelta) < Math.abs(mTrackX - toXDelta)) {
@@ -451,8 +479,8 @@ public class Panel extends LinearLayout {
 						toXDelta = fromXDelta;
 					}
 					fromXDelta = (int) mTrackX;
-				} else
-				if (mState == State.FLYING) {
+				}
+				else if (mState == State.FLYING) {
 					fromXDelta = (int) mTrackX;
 				}
 				// for FLYING events we calculate animation duration based on flying velocity
@@ -460,11 +488,12 @@ public class Panel extends LinearLayout {
 				if (mState == State.FLYING && mLinearFlying) {
 					calculatedDuration = (int) (1000 * Math.abs((toXDelta - fromXDelta) / mVelocity));
 					calculatedDuration = Math.max(calculatedDuration, 20);
-				} else {
+				}
+				else {
 					calculatedDuration = mDuration * Math.abs(toXDelta - fromXDelta) / mContentWidth;
 				}
 			}
-			
+
 			mTrackX = mTrackY = 0;
 			if (calculatedDuration == 0) {
 				mState = State.READY;
@@ -474,14 +503,14 @@ public class Panel extends LinearLayout {
 				postProcess();
 				return;
 			}
-			
+
 			animation = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
 			animation.setDuration(calculatedDuration);
 			animation.setAnimationListener(animationListener);
 			if (mState == State.FLYING && mLinearFlying) {
 				animation.setInterpolator(new LinearInterpolator());
-			} else
-			if (mInterpolator != null) {
+			}
+			else if (mInterpolator != null) {
 				animation.setInterpolator(mInterpolator);
 			}
 			startAnimation(animation);
@@ -496,8 +525,10 @@ public class Panel extends LinearLayout {
 			}
 			postProcess();
 		}
+
 		public void onAnimationRepeat(Animation animation) {
 		}
+
 		public void onAnimationStart(Animation animation) {
 			mState = State.ANIMATING;
 		}
@@ -506,41 +537,47 @@ public class Panel extends LinearLayout {
 	private void postProcess() {
 		if (mIsShrinking && mClosedHandle != null) {
 			mHandle.setBackgroundDrawable(mClosedHandle);
-		} else
-		if (!mIsShrinking && mOpenedHandle != null) {
+		}
+		else if (!mIsShrinking && mOpenedHandle != null) {
 			mHandle.setBackgroundDrawable(mOpenedHandle);
 		}
 		// invoke listener if any
 		if (panelListener != null) {
 			if (mIsShrinking) {
 				panelListener.onPanelClosed(Panel.this);
-			} else {
+			}
+			else {
 				panelListener.onPanelOpened(Panel.this);
 			}
 		}
 	}
-	
+
 	class PanelOnGestureListener implements OnGestureListener {
 		float scrollY;
 		float scrollX;
+
 		public void setScroll(int initScrollX, int initScrollY) {
 			scrollX = initScrollX;
 			scrollY = initScrollY;
 		}
+
 		public boolean onDown(MotionEvent e) {
 			scrollX = scrollY = 0;
 			initChange();
 			return true;
 		}
+
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			mState = State.FLYING;
-			mVelocity = mOrientation == VERTICAL? velocityY : velocityX;
+			mVelocity = mOrientation == VERTICAL ? velocityY : velocityX;
 			post(startAnimation);
 			return true;
 		}
+
 		public void onLongPress(MotionEvent e) {
 			// not used
 		}
+
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			mState = State.TRACKING;
 			float tmpY = 0, tmpX = 0;
@@ -548,14 +585,17 @@ public class Panel extends LinearLayout {
 				scrollY -= distanceY;
 				if (mPosition == TOP) {
 					tmpY = ensureRange(scrollY, -mContentHeight, 0);
-				} else  {
+				}
+				else {
 					tmpY = ensureRange(scrollY, 0, mContentHeight);
 				}
-			} else {
+			}
+			else {
 				scrollX -= distanceX;
 				if (mPosition == LEFT) {
 					tmpX = ensureRange(scrollX, -mContentWidth, 0);
-				} else {
+				}
+				else {
 					tmpX = ensureRange(scrollX, 0, mContentWidth);
 				}
 			}
@@ -566,9 +606,11 @@ public class Panel extends LinearLayout {
 			}
 			return true;
 		}
+
 		public void onShowPress(MotionEvent e) {
 			// not used
 		}
+
 		public boolean onSingleTapUp(MotionEvent e) {
 			// not used
 			return false;
